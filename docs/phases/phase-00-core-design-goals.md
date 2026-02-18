@@ -1,6 +1,6 @@
 # Phase 0: Core Design Goals
 
-**Status:** Not Started
+**Status:** Complete
 
 ## Design Principles
 

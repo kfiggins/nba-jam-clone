@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="GameConfigData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/game_config_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+match_duration = 120.0
+countdown_duration = 3.0
+points_per_shot = 2
+points_per_three = 3
+enable_three_point_zone = false
+player_speed = 300.0
+player_sprint_speed = 450.0
+player_jump_force = 500.0
+player_gravity = 980.0
+player_air_control = 0.3
+player_acceleration = 1200.0
+player_friction = 1000.0
+turbo_max = 100.0
+turbo_drain_rate = 30.0
+turbo_regen_rate = 15.0
+ball_gravity = 800.0
+ball_bounce_factor = 0.6
+ball_pickup_radius = 30.0
+shot_success_base = 0.5
+shot_success_close = 0.85
+shot_perfect_window = 0.15
+shot_perfect_bonus = 0.25
+dunk_range = 100.0
+dunk_jump_threshold = 0.6
+steal_chance_base = 0.3
+steal_cooldown = 0.5
+steal_stun_duration = 0.3
+block_window = 0.3
+ai_reaction_speed = 0.3
+ai_shot_accuracy = 0.5
+ai_steal_chance = 0.3
+ai_aggression = 0.5
+fire_streak_threshold = 3
+fire_shot_bonus = 0.3

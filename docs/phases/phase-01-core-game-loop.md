@@ -1,6 +1,6 @@
 # Phase 1: Core Game Loop
 
-**Status:** Not Started
+**Status:** Complete
 
 ## Goal
 
@@ -8,8 +8,8 @@ Playable match from tip-off to final buzzer.
 
 ## Features
 
-- [ ] Start match → countdown → gameplay → buzzer → results screen
-- [ ] Fixed match length (configurable)
-- [ ] Score tracking per team
-- [ ] Win/lose/draw outcome
-- [ ] Restart / rematch flow
+- [x] Start match → countdown → gameplay → buzzer → results screen
+- [x] Fixed match length (configurable)
+- [x] Score tracking per team
+- [x] Win/lose/draw outcome
+- [x] Restart / rematch flow
