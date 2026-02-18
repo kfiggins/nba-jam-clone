@@ -115,6 +115,12 @@ func has_ball() -> bool:
 	return held_ball != null
 
 
+func try_shoot() -> void:
+	if held_ball == null:
+		return
+	held_ball.shoot(self)
+
+
 func try_pass() -> void:
 	if held_ball == null:
 		return

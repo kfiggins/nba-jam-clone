@@ -12,6 +12,8 @@ func physics_process(delta: float) -> State:
 		return state_machine.get_state("Idle")
 
 	if Input.is_action_just_pressed("shoot") and player.is_human:
+		if player.has_ball():
+			return state_machine.get_state("Shooting")
 		return state_machine.get_state("Jumping")
 
 	if Input.is_action_just_pressed("pass_ball") and player.is_human:

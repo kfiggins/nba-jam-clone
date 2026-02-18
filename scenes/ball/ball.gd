@@ -6,6 +6,9 @@ signal owner_changed(old_owner: Player, new_owner: Player)
 signal ball_stolen(stealer: Player, victim: Player)
 signal ball_passed(passer: Player, target: Player)
 signal ball_bounced
+signal shot_taken(shooter: Player)
+signal shot_made(shooter: Player, points: int)
+signal shot_missed(shooter: Player)
 
 ## Current player holding the ball (null = loose)
 var current_owner: Player = null
@@ -19,6 +22,9 @@ var ground_velocity: Vector2 = Vector2.ZERO
 
 ## Pass target (set when entering Passed state)
 var pass_target: Player = null
+
+## Shooter reference (set when entering Shot state)
+var shot_shooter: Player = null
 
 @onready var sprite: Node2D = $Sprite
 @onready var shadow: Node2D = $Shadow
@@ -69,6 +75,18 @@ func start_pass(passer: Player, target: Player) -> void:
 	ball_passed.emit(passer, target)
 	owner_changed.emit(old, null)
 	state_machine.change_state(state_machine.get_state("Passed"))
+
+
+## Shoot the ball toward the basket. Transitions to Shot state.
+func shoot(shooter: Player) -> void:
+	shot_shooter = shooter
+	if current_owner:
+		current_owner.held_ball = null
+	var old := current_owner
+	current_owner = null
+	shot_taken.emit(shooter)
+	owner_changed.emit(old, null)
+	state_machine.change_state(state_machine.get_state("Shot"))
 
 
 ## Attempt a steal. Returns true if successful.

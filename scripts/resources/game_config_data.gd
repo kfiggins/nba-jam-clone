@@ -35,6 +35,12 @@ extends Resource
 @export var shot_success_close: float = 0.85
 @export var shot_perfect_window: float = 0.15 # seconds
 @export var shot_perfect_bonus: float = 0.25
+@export var shot_speed: float = 500.0
+@export var shot_arc_height: float = 200.0
+@export var shot_close_range: float = 200.0
+@export var shot_release_delay: float = 0.15 # seconds before ball released during jump
+@export var shot_miss_bounce_min: float = 100.0
+@export var shot_miss_bounce_max: float = 200.0
 
 # Dunk
 @export var dunk_range: float = 100.0

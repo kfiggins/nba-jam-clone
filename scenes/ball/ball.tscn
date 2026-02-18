@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scenes/ball/ball.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/systems/state_machine.gd" id="2"]
 [ext_resource type="Script" path="res://scenes/ball/states/held_state.gd" id="3"]
 [ext_resource type="Script" path="res://scenes/ball/states/loose_state.gd" id="4"]
 [ext_resource type="Script" path="res://scenes/ball/states/passed_state.gd" id="5"]
+[ext_resource type="Script" path="res://scenes/ball/states/shot_state.gd" id="6"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
 radius = 8.0
@@ -46,3 +47,6 @@ script = ExtResource("4")
 
 [node name="Passed" type="Node" parent="StateMachine"]
 script = ExtResource("5")
+
+[node name="Shot" type="Node" parent="StateMachine"]
+script = ExtResource("6")
