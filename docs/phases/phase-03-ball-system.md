@@ -1,6 +1,6 @@
 # Phase 3: Ball System
 
-**Status:** Not Started
+**Status:** Complete
 
 ## Goal
 
@@ -8,10 +8,10 @@ Central shared object with clear ownership.
 
 ## Features
 
-- [ ] Ball physics (gravity, arc, bounce tuning)
-- [ ] Ball owner tracking
-- [ ] Loose ball state
-- [ ] Auto-pickup when near ball
-- [ ] Pass to teammate
-- [ ] Steal when close to opponent
-- [ ] Intercept pass (simple)
+- [x] Ball physics (gravity, arc, bounce tuning)
+- [x] Ball owner tracking
+- [x] Loose ball state
+- [x] Auto-pickup when near ball
+- [x] Pass to teammate
+- [x] Steal when close to opponent
+- [x] Intercept pass (simple)

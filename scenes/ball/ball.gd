@@ -1,0 +1,141 @@
+class_name Ball
+extends Area2D
+## Basketball with pseudo-3D height, state machine, and ownership tracking.
+
+signal owner_changed(old_owner: Player, new_owner: Player)
+signal ball_stolen(stealer: Player, victim: Player)
+signal ball_passed(passer: Player, target: Player)
+signal ball_bounced
+
+## Current player holding the ball (null = loose)
+var current_owner: Player = null
+
+## Pseudo-3D height (same system as Player)
+var height: float = 0.0
+var height_velocity: float = 0.0
+
+## Ground-plane velocity (used in Loose and Passed states)
+var ground_velocity: Vector2 = Vector2.ZERO
+
+## Pass target (set when entering Passed state)
+var pass_target: Player = null
+
+@onready var sprite: Node2D = $Sprite
+@onready var shadow: Node2D = $Shadow
+@onready var state_machine: StateMachine = $StateMachine
+
+
+func _ready() -> void:
+	add_to_group("ball")
+	var loose := state_machine.get_state("Loose")
+	if loose:
+		state_machine.initialize(loose)
+
+
+func _physics_process(_delta: float) -> void:
+	_update_visual_height()
+
+
+## Assign ball to a player. Transitions to Held state.
+func pick_up(player: Player) -> void:
+	var old := current_owner
+	current_owner = player
+	player.held_ball = self
+	ground_velocity = Vector2.ZERO
+	height_velocity = 0.0
+	owner_changed.emit(old, player)
+	state_machine.change_state(state_machine.get_state("Held"))
+
+
+## Release ball into the world. Transitions to Loose state.
+func release(launch_velocity: Vector2 = Vector2.ZERO, launch_height_vel: float = 0.0) -> void:
+	if current_owner:
+		current_owner.held_ball = null
+	var old := current_owner
+	current_owner = null
+	ground_velocity = launch_velocity
+	height_velocity = launch_height_vel
+	owner_changed.emit(old, null)
+	state_machine.change_state(state_machine.get_state("Loose"))
+
+
+## Start a pass toward target player. Transitions to Passed state.
+func start_pass(passer: Player, target: Player) -> void:
+	pass_target = target
+	if current_owner:
+		current_owner.held_ball = null
+	var old := current_owner
+	current_owner = null
+	ball_passed.emit(passer, target)
+	owner_changed.emit(old, null)
+	state_machine.change_state(state_machine.get_state("Passed"))
+
+
+## Attempt a steal. Returns true if successful.
+func attempt_steal(stealer: Player) -> bool:
+	if current_owner == null:
+		return false
+	if current_owner.team == stealer.team:
+		return false
+	var roll := randf()
+	if roll < GameConfig.data.steal_chance_base:
+		var victim := current_owner
+		ball_stolen.emit(stealer, victim)
+		release(Vector2.ZERO, 100.0)
+		pick_up(stealer)
+		return true
+	return false
+
+
+## Apply gravity to height with bounce.
+func apply_ball_gravity(delta: float) -> void:
+	height_velocity -= GameConfig.data.ball_gravity * delta
+	height += height_velocity * delta
+	if height <= 0.0:
+		height = 0.0
+		if absf(height_velocity) > 50.0:
+			height_velocity = -height_velocity * GameConfig.data.ball_bounce_factor
+			ball_bounced.emit()
+		else:
+			height_velocity = 0.0
+
+
+## Find nearest teammate of the given player.
+func find_pass_target(passer: Player) -> Player:
+	var best: Player = null
+	var best_dist := INF
+	for node in get_tree().get_nodes_in_group("players"):
+		var p := node as Player
+		if p == null or p == passer:
+			continue
+		if p.team != passer.team:
+			continue
+		var dist := passer.global_position.distance_to(p.global_position)
+		if dist < best_dist:
+			best_dist = dist
+			best = p
+	return best
+
+
+## Check for nearby opponent during pass (interception).
+func check_intercept() -> Player:
+	var config := GameConfig.data
+	for node in get_tree().get_nodes_in_group("players"):
+		var p := node as Player
+		if p == null or p == pass_target:
+			continue
+		if pass_target and p.team == pass_target.team:
+			continue
+		var dist := global_position.distance_to(p.global_position)
+		if dist <= config.ball_pickup_radius:
+			return p
+	return null
+
+
+func _update_visual_height() -> void:
+	if sprite:
+		sprite.position.y = -height
+	if shadow:
+		shadow.position.y = 0.0
+		var scale_factor := clampf(1.0 - height / 300.0, 0.5, 1.0)
+		shadow.scale = Vector2(scale_factor, scale_factor)

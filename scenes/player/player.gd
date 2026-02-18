@@ -21,6 +21,10 @@ var turbo: float = 0.0
 var input_direction: Vector2 = Vector2.ZERO
 var facing_direction: Vector2 = Vector2.RIGHT
 
+## Ball interaction
+var held_ball: Ball = null
+var steal_cooldown_timer: float = 0.0
+
 @onready var sprite: Node2D = $Sprite
 @onready var shadow: Node2D = $Shadow
 @onready var state_machine: StateMachine = $StateMachine
@@ -28,13 +32,16 @@ var facing_direction: Vector2 = Vector2.RIGHT
 
 func _ready() -> void:
 	turbo = GameConfig.data.turbo_max
+	add_to_group("players")
 	# Initialize state machine (states already indexed in StateMachine._ready)
 	var idle := state_machine.get_state("Idle")
 	if idle:
 		state_machine.initialize(idle)
 
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	if steal_cooldown_timer > 0.0:
+		steal_cooldown_timer -= delta
 	_update_visual_height()
 
 
@@ -102,6 +109,43 @@ func apply_movement(delta: float, air_control_factor: float = 1.0) -> void:
 		velocity = velocity.move_toward(Vector2.ZERO, config.player_friction * delta)
 
 	move_and_slide()
+
+
+func has_ball() -> bool:
+	return held_ball != null
+
+
+func try_pass() -> void:
+	if held_ball == null:
+		return
+	var target := held_ball.find_pass_target(self)
+	if target == null:
+		return
+	held_ball.start_pass(self, target)
+
+
+func try_steal() -> void:
+	if held_ball != null:
+		return
+	if steal_cooldown_timer > 0.0:
+		return
+	steal_cooldown_timer = GameConfig.data.steal_cooldown
+
+	var ball_node: Ball = null
+	for node in get_tree().get_nodes_in_group("ball"):
+		ball_node = node as Ball
+		break
+
+	if ball_node == null or ball_node.current_owner == null:
+		return
+	if ball_node.current_owner.team == team:
+		return
+
+	var dist := global_position.distance_to(ball_node.current_owner.global_position)
+	if dist > GameConfig.data.steal_range:
+		return
+
+	ball_node.attempt_steal(self)
 
 
 func _update_visual_height() -> void:

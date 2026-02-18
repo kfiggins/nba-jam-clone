@@ -26,6 +26,9 @@ extends Resource
 @export var ball_gravity: float = 800.0
 @export var ball_bounce_factor: float = 0.6
 @export var ball_pickup_radius: float = 30.0
+@export var pass_speed: float = 600.0
+@export var pass_arc_height: float = 40.0
+@export var steal_range: float = 40.0
 
 # Shooting
 @export var shot_success_base: float = 0.5

@@ -14,4 +14,10 @@ func physics_process(delta: float) -> State:
 	if Input.is_action_just_pressed("shoot") and player.is_human:
 		return state_machine.get_state("Jumping")
 
+	if Input.is_action_just_pressed("pass_ball") and player.is_human:
+		if player.has_ball():
+			player.try_pass()
+		else:
+			player.try_steal()
+
 	return null
