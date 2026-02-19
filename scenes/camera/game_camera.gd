@@ -1,12 +1,16 @@
 class_name GameCamera
 extends Camera2D
 ## Tracks the action: follows the ball + nearby players, biases toward the basket,
-## and zooms in when the ball is near the rim.
+## zooms in when the ball is near the rim, and provides screen shake.
 
 const COURT_WIDTH := 1280.0
 const COURT_HEIGHT := 720.0
 const FOCUS_WEIGHT := 0.7
 const BASKET_WEIGHT := 0.3
+
+var _shake_intensity: float = 0.0
+var _shake_remaining: float = 0.0
+var _shake_duration: float = 0.0
 
 
 func _ready() -> void:
@@ -17,10 +21,34 @@ func _ready() -> void:
 	limit_bottom = int(COURT_HEIGHT)
 
 
+func shake(intensity: float, duration: float) -> void:
+	_shake_intensity = intensity
+	_shake_duration = duration
+	_shake_remaining = duration
+
+
 func _physics_process(delta: float) -> void:
 	var target := _get_target_position()
 	global_position = global_position.lerp(target, GameConfig.data.camera_smooth_speed * delta)
 	_update_zoom(delta)
+	_update_shake(delta)
+
+
+func _update_shake(delta: float) -> void:
+	if _shake_remaining > 0.0:
+		_shake_remaining -= delta
+		var decay := _shake_remaining / _shake_duration if _shake_duration > 0.0 else 0.0
+		var shake_amount := _shake_intensity * decay
+		offset = Vector2(
+			randf_range(-shake_amount, shake_amount),
+			randf_range(-shake_amount, shake_amount)
+		)
+		if _shake_remaining <= 0.0:
+			_shake_remaining = 0.0
+			_shake_intensity = 0.0
+			offset = Vector2.ZERO
+	else:
+		offset = Vector2.ZERO
 
 
 func _get_target_position() -> Vector2:

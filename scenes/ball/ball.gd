@@ -32,6 +32,7 @@ var shot_shooter: Player = null
 @onready var sprite: Node2D = $Sprite
 @onready var shadow: Node2D = $Shadow
 @onready var state_machine: StateMachine = $StateMachine
+@onready var trail: Line2D = get_node_or_null("Trail")
 
 
 func _ready() -> void:
@@ -43,6 +44,7 @@ func _ready() -> void:
 
 func _physics_process(_delta: float) -> void:
 	_update_visual_height()
+	_update_trail()
 
 
 ## Assign ball to a player. Transitions to Held state.
@@ -250,3 +252,17 @@ func _update_visual_height() -> void:
 		shadow.position.y = 0.0
 		var scale_factor := clampf(1.0 - height / 300.0, 0.5, 1.0)
 		shadow.scale = Vector2(scale_factor, scale_factor)
+
+
+func _update_trail() -> void:
+	if not trail:
+		return
+	var config := GameConfig.data
+	var speed := ground_velocity.length()
+	if speed >= config.ball_trail_min_speed:
+		var trail_pos := global_position + Vector2(0, -height)
+		trail.add_point(trail_pos, 0)
+		while trail.get_point_count() > config.ball_trail_length:
+			trail.remove_point(trail.get_point_count() - 1)
+	else:
+		trail.clear_points()

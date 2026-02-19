@@ -38,8 +38,10 @@ func _reset_display() -> void:
 func _on_score_changed(team: int, new_score: int) -> void:
 	if team == 1:
 		team1_score_label.text = str(new_score)
+		_flash_label(team1_score_label)
 	elif team == 2:
 		team2_score_label.text = str(new_score)
+		_flash_label(team2_score_label)
 
 
 func _on_clock_updated(time_remaining: float) -> void:
@@ -136,6 +138,15 @@ func update_possession(team: int) -> void:
 			possession_label.text = "TEAM 2 >"
 		_:
 			possession_label.text = ""
+
+
+func _flash_label(label: Label) -> Tween:
+	var config := GameConfig.data
+	label.pivot_offset = label.size * 0.5
+	var tween := create_tween()
+	tween.tween_property(label, "scale", Vector2.ONE * config.score_flash_scale, config.score_flash_duration * 0.5)
+	tween.tween_property(label, "scale", Vector2.ONE, config.score_flash_duration * 0.5)
+	return tween
 
 
 func _format_time(seconds: float) -> String:

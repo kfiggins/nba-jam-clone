@@ -96,3 +96,15 @@ extends Resource
 # On Fire
 @export var fire_streak_threshold: int = 3
 @export var fire_shot_bonus: float = 0.3
+
+# Juice / Feedback
+@export var shake_dunk_intensity: float = 8.0
+@export var shake_dunk_duration: float = 0.3
+@export var shake_block_intensity: float = 6.0
+@export var shake_block_duration: float = 0.25
+@export var ball_trail_length: int = 8
+@export var ball_trail_min_speed: float = 300.0
+@export var rim_shake_intensity: float = 4.0
+@export var rim_shake_duration: float = 0.2
+@export var score_flash_scale: float = 1.5
+@export var score_flash_duration: float = 0.3

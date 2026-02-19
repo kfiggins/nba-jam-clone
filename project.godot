@@ -23,6 +23,7 @@ config/features=PackedStringArray("4.6")
 
 GameConfig="*res://scripts/autoload/game_config.gd"
 GameManager="*res://scripts/autoload/game_manager.gd"
+AudioManager="*res://scripts/audio/audio_manager.gd"
 
 [display]
 

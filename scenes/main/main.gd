@@ -1,6 +1,6 @@
 extends Node2D
 ## Main scene. Wires up HUD, handles match start/restart, attaches AI controllers,
-## manages possession resets, streak tracking, and HUD feedback.
+## manages possession resets, streak tracking, HUD feedback, and juice effects.
 
 
 func _ready() -> void:
@@ -14,6 +14,7 @@ func _ready() -> void:
 			p.caught_fire.connect(_on_player_caught_fire.bind(p))
 			p.fire_ended.connect(_on_player_fire_ended.bind(p))
 	GameManager.possession_reset.connect(_on_possession_reset)
+	GameManager.game_state_changed.connect(_on_game_state_changed)
 	var ball := _get_ball()
 	if ball:
 		ball.shot_made.connect(_on_shot_made)
@@ -46,6 +47,7 @@ func _on_shot_made(shooter: Player, points: int) -> void:
 	var hud := _get_hud()
 	if hud:
 		hud.on_shot_made(points)
+	AudioManager.play_sfx("swish")
 
 
 func _on_dunk_made(dunker: Player, _points: int) -> void:
@@ -54,6 +56,14 @@ func _on_dunk_made(dunker: Player, _points: int) -> void:
 	var hud := _get_hud()
 	if hud:
 		hud.on_dunk_made()
+	var config := GameConfig.data
+	var camera := _get_camera()
+	if camera:
+		camera.shake(config.shake_dunk_intensity, config.shake_dunk_duration)
+	var basket := _get_basket()
+	if basket:
+		basket.rim_shake()
+	AudioManager.play_sfx("dunk")
 
 
 func _on_shot_missed(shooter: Player) -> void:
@@ -67,6 +77,11 @@ func _on_shot_blocked(_blocker: Player, shooter: Player) -> void:
 	var hud := _get_hud()
 	if hud:
 		hud.on_shot_blocked()
+	var config := GameConfig.data
+	var camera := _get_camera()
+	if camera:
+		camera.shake(config.shake_block_intensity, config.shake_block_duration)
+	AudioManager.play_sfx("block")
 
 
 func _on_ball_stolen(_stealer: Player, victim: Player) -> void:
@@ -75,6 +90,7 @@ func _on_ball_stolen(_stealer: Player, victim: Player) -> void:
 	var hud := _get_hud()
 	if hud:
 		hud.on_ball_stolen()
+	AudioManager.play_sfx("steal")
 
 
 func _on_owner_changed(_old_owner: Player, new_owner: Player) -> void:
@@ -98,6 +114,11 @@ func _on_player_fire_ended(player: Player) -> void:
 		hud.on_player_fire_ended(player)
 
 
+func _on_game_state_changed(_old_state: GameManager.MatchState, new_state: GameManager.MatchState) -> void:
+	if new_state == GameManager.MatchState.BUZZER:
+		AudioManager.play_sfx("buzzer")
+
+
 func _get_ball() -> Ball:
 	for node in get_tree().get_nodes_in_group("ball"):
 		return node as Ball
@@ -106,6 +127,20 @@ func _get_ball() -> Ball:
 
 func _get_hud() -> CanvasLayer:
 	return $HUD if has_node("HUD") else null
+
+
+func _get_camera() -> GameCamera:
+	for node in get_tree().get_nodes_in_group("camera"):
+		return node as GameCamera
+	if has_node("GameCamera"):
+		return $GameCamera as GameCamera
+	return null
+
+
+func _get_basket() -> Basket:
+	for node in get_tree().get_nodes_in_group("basket"):
+		return node as Basket
+	return null
 
 
 func _get_inbound_player(team: int) -> Player:
