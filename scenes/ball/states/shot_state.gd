@@ -99,12 +99,18 @@ func _resolve_shot() -> void:
 
 func _calculate_success_chance(distance: float) -> float:
 	var config := GameConfig.data
+	var chance: float
 	if distance <= config.shot_close_range:
-		return config.shot_success_close
-	# Linear falloff from close to base over 3x the close range
-	var far_range := config.shot_close_range * 3.0
-	var t := clampf((distance - config.shot_close_range) / (far_range - config.shot_close_range), 0.0, 1.0)
-	return lerpf(config.shot_success_close, config.shot_success_base, t)
+		chance = config.shot_success_close
+	else:
+		# Linear falloff from close to base over 3x the close range
+		var far_range := config.shot_close_range * 3.0
+		var t := clampf((distance - config.shot_close_range) / (far_range - config.shot_close_range), 0.0, 1.0)
+		chance = lerpf(config.shot_success_close, config.shot_success_base, t)
+	# On Fire bonus
+	if ball.shot_shooter and ball.shot_shooter.is_on_fire:
+		chance += config.fire_shot_bonus
+	return clampf(chance, 0.0, 1.0)
 
 
 func _get_points(config: GameConfigData, distance: float) -> int:

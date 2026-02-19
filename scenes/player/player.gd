@@ -6,6 +6,8 @@ extends CharacterBody2D
 signal jumped
 signal landed
 signal turbo_changed(current: float, maximum: float)
+signal caught_fire
+signal fire_ended
 
 @export var team: int = 1
 @export var is_human: bool = true
@@ -28,6 +30,10 @@ var block_stun_timer: float = 0.0
 var steal_stun_timer: float = 0.0
 var bump_slow_timer: float = 0.0
 var bump_cooldown_timer: float = 0.0
+
+## On Fire / streak
+var streak_count: int = 0
+var is_on_fire: bool = false
 
 ## AI action flags (set by AIController, consumed by states)
 var ai_shoot_requested: bool = false
@@ -182,6 +188,20 @@ func auto_face_ball_handler() -> void:
 			if dir_to_handler != Vector2.ZERO:
 				facing_direction = dir_to_handler
 		break
+
+
+func add_streak() -> void:
+	streak_count += 1
+	if not is_on_fire and streak_count >= GameConfig.data.fire_streak_threshold:
+		is_on_fire = true
+		caught_fire.emit()
+
+
+func reset_streak() -> void:
+	streak_count = 0
+	if is_on_fire:
+		is_on_fire = false
+		fire_ended.emit()
 
 
 func has_ball() -> bool:
