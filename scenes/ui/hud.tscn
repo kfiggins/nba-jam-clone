@@ -39,6 +39,14 @@ text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="PossessionIndicator" type="Label" parent="TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = ""
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Message" type="Label" parent="."]
 unique_name_in_owner = true
 anchors_preset = 8
@@ -56,3 +64,41 @@ theme_override_font_sizes/font_size = 48
 text = ""
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="ShotFeedback" type="Label" parent="."]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = 40.0
+offset_right = 200.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 28
+text = ""
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FireIndicator" type="Label" parent="."]
+unique_name_in_owner = true
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 65.0
+offset_right = 150.0
+offset_bottom = 95.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+text = ""
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="FeedbackTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+one_shot = true
+wait_time = 1.5

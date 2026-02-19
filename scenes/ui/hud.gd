@@ -1,10 +1,17 @@
 extends CanvasLayer
-## HUD displays scores, game clock, countdown, and match result messages.
+## HUD displays scores, game clock, countdown, match result messages,
+## shot feedback, fire indicator, and possession indicator.
 
 @onready var team1_score_label: Label = %Team1Score
 @onready var team2_score_label: Label = %Team2Score
 @onready var clock_label: Label = %Clock
 @onready var message_label: Label = %Message
+@onready var shot_feedback_label: Label = %ShotFeedback
+@onready var fire_indicator_label: Label = %FireIndicator
+@onready var possession_label: Label = %PossessionIndicator
+@onready var feedback_timer: Timer = %FeedbackTimer
+
+var _fire_players: Array[Player] = []
 
 
 func _ready() -> void:
@@ -13,6 +20,8 @@ func _ready() -> void:
 	GameManager.countdown_tick.connect(_on_countdown_tick)
 	GameManager.game_state_changed.connect(_on_game_state_changed)
 	GameManager.match_ended.connect(_on_match_ended)
+	if feedback_timer:
+		feedback_timer.timeout.connect(_on_feedback_timer_timeout)
 	_reset_display()
 
 
@@ -21,6 +30,9 @@ func _reset_display() -> void:
 	team2_score_label.text = "0"
 	clock_label.text = _format_time(GameConfig.data.match_duration)
 	message_label.text = ""
+	shot_feedback_label.text = ""
+	fire_indicator_label.text = ""
+	possession_label.text = ""
 
 
 func _on_score_changed(team: int, new_score: int) -> void:
@@ -61,6 +73,69 @@ func _on_match_ended(winner: int) -> void:
 			message_label.text = "TEAM 1 WINS!\nPress R to rematch"
 		2:
 			message_label.text = "TEAM 2 WINS!\nPress R to rematch"
+
+
+# -- Shot Feedback --
+
+func show_shot_feedback(text: String) -> void:
+	shot_feedback_label.text = text
+	if feedback_timer:
+		feedback_timer.start()
+
+
+func on_shot_made(points: int) -> void:
+	if points >= 3:
+		show_shot_feedback("FROM DOWNTOWN!")
+	else:
+		show_shot_feedback("SWISH!")
+
+
+func on_dunk_made() -> void:
+	show_shot_feedback("SLAM DUNK!")
+
+
+func on_shot_blocked() -> void:
+	show_shot_feedback("BLOCKED!")
+
+
+func on_ball_stolen() -> void:
+	show_shot_feedback("STOLEN!")
+
+
+func _on_feedback_timer_timeout() -> void:
+	shot_feedback_label.text = ""
+
+
+# -- Fire Indicator --
+
+func on_player_caught_fire(player: Player) -> void:
+	if player and player not in _fire_players:
+		_fire_players.append(player)
+	_update_fire_display()
+
+
+func on_player_fire_ended(player: Player) -> void:
+	_fire_players.erase(player)
+	_update_fire_display()
+
+
+func _update_fire_display() -> void:
+	if _fire_players.size() > 0:
+		fire_indicator_label.text = "HE'S ON FIRE!"
+	else:
+		fire_indicator_label.text = ""
+
+
+# -- Possession Indicator --
+
+func update_possession(team: int) -> void:
+	match team:
+		1:
+			possession_label.text = "< TEAM 1"
+		2:
+			possession_label.text = "TEAM 2 >"
+		_:
+			possession_label.text = ""
 
 
 func _format_time(seconds: float) -> String:

@@ -1,6 +1,6 @@
 # Phase 12: UI / HUD
 
-**Status:** Not Started
+**Status:** Complete
 
 ## Goal
 
@@ -8,9 +8,9 @@ Clear arcade presentation.
 
 ## Features
 
-- [ ] Score display
-- [ ] Timer / game clock
-- [ ] Shot feedback (make/miss/block)
-- [ ] "On Fire" indicator
-- [ ] Simple start / end screens
-- [ ] Possession indicator (optional)
+- [x] Score display
+- [x] Timer / game clock
+- [x] Shot feedback (make/miss/block)
+- [x] "On Fire" indicator
+- [x] Simple start / end screens
+- [x] Possession indicator (optional)
