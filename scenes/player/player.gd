@@ -231,6 +231,7 @@ func apply_movement(delta: float, air_control_factor: float = 1.0) -> void:
 		velocity = velocity.move_toward(Vector2.ZERO, config.player_friction * delta)
 
 	move_and_slide()
+	_clamp_to_court()
 
 	# Body bump: check collisions with opposing ball handler
 	for i in range(get_slide_collision_count()):
@@ -333,6 +334,12 @@ func try_steal() -> void:
 	var success := ball_node.attempt_steal(self)
 	if not success:
 		apply_steal_stun()
+
+
+func _clamp_to_court() -> void:
+	var bounds := GameConfig.data.court_bounds
+	global_position.x = clampf(global_position.x, bounds.position.x, bounds.end.x)
+	global_position.y = clampf(global_position.y, bounds.position.y, bounds.end.y)
 
 
 func _update_visual_height() -> void:

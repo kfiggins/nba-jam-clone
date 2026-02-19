@@ -330,3 +330,44 @@ func test_ai_player_has_no_indicator() -> void:
 	add_child(_player)
 	var indicator := _player.get_node_or_null("Sprite/HumanIndicator")
 	assert_null(indicator, "AI player should not have an indicator")
+
+
+# -- Boundary Clamping --
+
+func test_player_clamped_to_court_right() -> void:
+	_add_player()
+	var bounds := GameConfig.data.court_bounds
+	_player.global_position = Vector2(bounds.end.x + 100, 360)
+	_player._clamp_to_court()
+	assert_eq(_player.global_position.x, bounds.end.x, "Should clamp to right edge")
+
+
+func test_player_clamped_to_court_left() -> void:
+	_add_player()
+	var bounds := GameConfig.data.court_bounds
+	_player.global_position = Vector2(bounds.position.x - 100, 360)
+	_player._clamp_to_court()
+	assert_eq(_player.global_position.x, bounds.position.x, "Should clamp to left edge")
+
+
+func test_player_clamped_to_court_top() -> void:
+	_add_player()
+	var bounds := GameConfig.data.court_bounds
+	_player.global_position = Vector2(640, bounds.position.y - 100)
+	_player._clamp_to_court()
+	assert_eq(_player.global_position.y, bounds.position.y, "Should clamp to top edge")
+
+
+func test_player_clamped_to_court_bottom() -> void:
+	_add_player()
+	var bounds := GameConfig.data.court_bounds
+	_player.global_position = Vector2(640, bounds.end.y + 100)
+	_player._clamp_to_court()
+	assert_eq(_player.global_position.y, bounds.end.y, "Should clamp to bottom edge")
+
+
+func test_player_inside_bounds_not_moved() -> void:
+	_add_player()
+	_player.global_position = Vector2(640, 360)
+	_player._clamp_to_court()
+	assert_eq(_player.global_position, Vector2(640, 360), "Should not move if inside bounds")
