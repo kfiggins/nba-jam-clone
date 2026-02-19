@@ -296,3 +296,37 @@ func test_air_control_reduces_movement() -> void:
 	var air_vel := _player.velocity.length()
 
 	assert_lt(air_vel, full_vel, "Air control should reduce movement")
+
+
+# -- Team Colors --
+
+func test_team_1_gets_blue_color() -> void:
+	_add_full_player()
+	_player.team = 1
+	_player._apply_team_color()
+	var body := _player.get_node("Sprite/BodySprite") as ColorRect
+	assert_eq(body.color, Color(0.2, 0.4, 0.8, 1), "Team 1 should be blue")
+
+
+func test_team_2_gets_red_color() -> void:
+	_player = load("res://scenes/player/player.tscn").instantiate()
+	_player.team = 2
+	add_child(_player)
+	var body := _player.get_node("Sprite/BodySprite") as ColorRect
+	assert_eq(body.color, Color(0.85, 0.2, 0.1, 1), "Team 2 should be red")
+
+
+func test_human_player_has_indicator() -> void:
+	_player = load("res://scenes/player/player.tscn").instantiate()
+	_player.is_human = true
+	add_child(_player)
+	var indicator := _player.get_node_or_null("Sprite/HumanIndicator")
+	assert_not_null(indicator, "Human player should have an indicator")
+
+
+func test_ai_player_has_no_indicator() -> void:
+	_player = load("res://scenes/player/player.tscn").instantiate()
+	_player.is_human = false
+	add_child(_player)
+	var indicator := _player.get_node_or_null("Sprite/HumanIndicator")
+	assert_null(indicator, "AI player should not have an indicator")

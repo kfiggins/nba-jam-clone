@@ -37,6 +37,10 @@ Each phase has a dedicated file in `docs/phases/`. Update the **Status** field i
 | 14 | [phase-14](docs/phases/phase-14-data-tuning.md) | Data & Tuning |
 | 15 | [phase-15](docs/phases/phase-15-technical-architecture.md) | Technical Architecture |
 | 16 | [phase-16](docs/phases/phase-16-stretch-features.md) | Stretch Features (Low Priority) |
+| 17 | [phase-17](docs/phases/phase-17-team-colors.md) | Team Color Differentiation |
+| 18 | [phase-18](docs/phases/phase-18-menus.md) | Start Screen, Pause Menu & Quit |
+| 19 | [phase-19](docs/phases/phase-19-player-boundaries.md) | Player Boundary Clamping |
+| 20 | [phase-20](docs/phases/phase-20-two-baskets.md) | Two Baskets (Full Half-Court) |
 
 ## Core Design Principles
 

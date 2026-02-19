@@ -48,13 +48,45 @@ var ai_sprint_requested: bool = false
 @onready var state_machine: StateMachine = $StateMachine
 
 
+## Team colors
+const TEAM_COLORS := {
+	1: Color(0.2, 0.4, 0.8, 1),   # Blue
+	2: Color(0.85, 0.2, 0.1, 1),   # Red
+}
+
+
 func _ready() -> void:
 	turbo = GameConfig.data.turbo_max
 	add_to_group("players")
+	_apply_team_color()
+	if is_human:
+		_add_human_indicator()
 	# Initialize state machine (states already indexed in StateMachine._ready)
 	var idle := state_machine.get_state("Idle")
 	if idle:
 		state_machine.initialize(idle)
+
+
+func _apply_team_color() -> void:
+	if not sprite or not sprite.has_node("BodySprite"):
+		return
+	var body_sprite := sprite.get_node("BodySprite") as ColorRect
+	if body_sprite:
+		body_sprite.color = TEAM_COLORS.get(team, Color.WHITE)
+
+
+func _add_human_indicator() -> void:
+	if not sprite:
+		return
+	var indicator := Polygon2D.new()
+	indicator.name = "HumanIndicator"
+	indicator.polygon = PackedVector2Array([
+		Vector2(-6, -48),
+		Vector2(6, -48),
+		Vector2(0, -42),
+	])
+	indicator.color = Color.WHITE
+	sprite.add_child(indicator)
 
 
 func _physics_process(delta: float) -> void:
