@@ -11,6 +11,7 @@ signal shot_made(shooter: Player, points: int)
 signal shot_missed(shooter: Player)
 signal dunk_made(dunker: Player, points: int)
 signal shot_blocked(blocker: Player, shooter: Player)
+signal steal_failed(stealer: Player, handler: Player)
 
 ## Current player holding the ball (null = loose)
 var current_owner: Player = null
@@ -108,20 +109,48 @@ func dunk(dunker: Player) -> void:
 	state_machine.change_state(state_machine.get_state("Loose"))
 
 
-## Attempt a steal. Returns true if successful.
+## Attempt a steal. Calculates success chance based on distance, facing, and ball exposure.
+## Returns true if successful.
 func attempt_steal(stealer: Player) -> bool:
 	if current_owner == null:
 		return false
 	if current_owner.team == stealer.team:
 		return false
+	var chance := _calculate_steal_chance(stealer)
 	var roll := randf()
-	if roll < GameConfig.data.steal_chance_base:
+	if roll < chance:
 		var victim := current_owner
 		ball_stolen.emit(stealer, victim)
 		release(Vector2.ZERO, 100.0)
 		pick_up(stealer)
 		return true
+	steal_failed.emit(stealer, current_owner)
 	return false
+
+
+## Calculate steal success probability based on distance and facing/exposure.
+func _calculate_steal_chance(stealer: Player) -> float:
+	var config := GameConfig.data
+	var chance := config.steal_chance_base
+
+	# Distance modifier: bonus at close range, linear falloff to 0 at steal_range
+	var dist := stealer.global_position.distance_to(current_owner.global_position)
+	var distance_factor := 1.0 - clampf(dist / config.steal_range, 0.0, 1.0)
+	chance += config.steal_distance_max_bonus * distance_factor
+
+	# Facing / ball exposure modifier:
+	# Dot product of handler's facing and direction from handler to stealer
+	# dot < 0 = stealer behind handler (ball exposed) => bonus
+	# dot > 0 = stealer in front (ball shielded) => penalty
+	var handler_to_stealer := (stealer.global_position - current_owner.global_position).normalized()
+	if handler_to_stealer != Vector2.ZERO:
+		var facing_dot := current_owner.facing_direction.dot(handler_to_stealer)
+		if facing_dot < 0.0:
+			chance += config.steal_facing_bonus * absf(facing_dot)
+		else:
+			chance += config.steal_facing_penalty * facing_dot
+
+	return clampf(chance, 0.05, 0.95)
 
 
 ## Check if any opponent defender can block the shot.

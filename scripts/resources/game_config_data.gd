@@ -59,6 +59,13 @@ extends Resource
 @export var block_deflect_ground_speed: float = 200.0
 @export var enable_goaltending: bool = true
 @export var goaltending_progress: float = 0.6
+@export var steal_facing_bonus: float = 0.25
+@export var steal_facing_penalty: float = -0.15
+@export var steal_distance_max_bonus: float = 0.15
+@export var bump_speed_reduction: float = 0.4
+@export var bump_duration: float = 0.3
+@export var bump_cooldown: float = 0.5
+@export var enable_auto_face_ball_handler: bool = true
 
 # AI
 @export var ai_reaction_speed: float = 0.3

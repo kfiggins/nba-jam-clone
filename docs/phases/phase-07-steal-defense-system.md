@@ -1,6 +1,6 @@
 # Phase 7: Steal & Defense System
 
-**Status:** Not Started
+**Status:** Complete
 
 ## Goal
 
@@ -8,11 +8,11 @@ Simple but fun defense.
 
 ## Features
 
-- [ ] Steal attempt button
-- [ ] Success based on:
+- [x] Steal attempt button
+- [x] Success based on:
   - Distance
   - Facing direction
   - Ball exposure
-- [ ] Failed steal penalty (short stun)
-- [ ] Body bump slows opponent
-- [ ] Auto-face ball handler (optional assist)
+- [x] Failed steal penalty (short stun)
+- [x] Body bump slows opponent
+- [x] Auto-face ball handler (optional assist)

@@ -10,6 +10,9 @@ func enter() -> void:
 func physics_process(delta: float) -> State:
 	player.update_turbo(delta)
 
+	if not player.has_ball() and player.is_human:
+		player.auto_face_ball_handler()
+
 	var dir := player.get_input_direction()
 	if dir != Vector2.ZERO:
 		return state_machine.get_state("Running")

@@ -25,6 +25,9 @@ var facing_direction: Vector2 = Vector2.RIGHT
 var held_ball: Ball = null
 var steal_cooldown_timer: float = 0.0
 var block_stun_timer: float = 0.0
+var steal_stun_timer: float = 0.0
+var bump_slow_timer: float = 0.0
+var bump_cooldown_timer: float = 0.0
 
 @onready var sprite: Node2D = $Sprite
 @onready var shadow: Node2D = $Shadow
@@ -45,6 +48,12 @@ func _physics_process(delta: float) -> void:
 		steal_cooldown_timer -= delta
 	if block_stun_timer > 0.0:
 		block_stun_timer -= delta
+	if steal_stun_timer > 0.0:
+		steal_stun_timer -= delta
+	if bump_slow_timer > 0.0:
+		bump_slow_timer -= delta
+	if bump_cooldown_timer > 0.0:
+		bump_cooldown_timer -= delta
 	_update_visual_height()
 
 
@@ -60,10 +69,31 @@ func apply_block_stun() -> void:
 	block_stun_timer = GameConfig.data.block_stun_duration
 
 
+func is_steal_stunned() -> bool:
+	return steal_stun_timer > 0.0
+
+
+func apply_steal_stun() -> void:
+	steal_stun_timer = GameConfig.data.steal_stun_duration
+
+
+func is_bumped() -> bool:
+	return bump_slow_timer > 0.0
+
+
+func apply_bump() -> void:
+	bump_slow_timer = GameConfig.data.bump_duration
+
+
 func get_move_speed() -> float:
+	var speed: float
 	if Input.is_action_pressed("turbo") and is_human and turbo > 0.0:
-		return GameConfig.data.player_sprint_speed
-	return GameConfig.data.player_speed
+		speed = GameConfig.data.player_sprint_speed
+	else:
+		speed = GameConfig.data.player_speed
+	if is_bumped():
+		speed *= GameConfig.data.bump_speed_reduction
+	return speed
 
 
 func is_sprinting() -> bool:
@@ -121,6 +151,30 @@ func apply_movement(delta: float, air_control_factor: float = 1.0) -> void:
 
 	move_and_slide()
 
+	# Body bump: check collisions with opposing ball handler
+	for i in range(get_slide_collision_count()):
+		var collision := get_slide_collision(i)
+		var collider := collision.get_collider()
+		if collider is Player:
+			var other := collider as Player
+			if other.team != team and other.has_ball() and bump_cooldown_timer <= 0.0:
+				other.apply_bump()
+				bump_cooldown_timer = GameConfig.data.bump_cooldown
+
+
+func auto_face_ball_handler() -> void:
+	if not GameConfig.data.enable_auto_face_ball_handler:
+		return
+	if has_ball():
+		return
+	for node in get_tree().get_nodes_in_group("ball"):
+		var ball_node := node as Ball
+		if ball_node and ball_node.current_owner and ball_node.current_owner.team != team:
+			var dir_to_handler := (ball_node.current_owner.global_position - global_position).normalized()
+			if dir_to_handler != Vector2.ZERO:
+				facing_direction = dir_to_handler
+		break
+
 
 func has_ball() -> bool:
 	return held_ball != null
@@ -162,6 +216,8 @@ func try_steal() -> void:
 		return
 	if steal_cooldown_timer > 0.0:
 		return
+	if is_steal_stunned():
+		return
 	steal_cooldown_timer = GameConfig.data.steal_cooldown
 
 	var ball_node: Ball = null
@@ -178,7 +234,9 @@ func try_steal() -> void:
 	if dist > GameConfig.data.steal_range:
 		return
 
-	ball_node.attempt_steal(self)
+	var success := ball_node.attempt_steal(self)
+	if not success:
+		apply_steal_stun()
 
 
 func _update_visual_height() -> void:
