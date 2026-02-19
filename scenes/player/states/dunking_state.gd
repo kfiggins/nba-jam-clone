@@ -26,7 +26,7 @@ func physics_process(delta: float) -> State:
 		# Dunk when close enough and at sufficient height
 		var dist := player.global_position.distance_to(_basket_pos)
 		var min_height := GameConfig.data.player_jump_force * GameConfig.data.dunk_jump_threshold * 0.1
-		if dist <= 25.0 and player.height >= min_height:
+		if dist <= GameConfig.data.dunk_trigger_distance and player.height >= min_height:
 			_perform_dunk()
 
 	# Land

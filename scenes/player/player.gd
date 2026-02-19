@@ -130,10 +130,11 @@ func apply_jump() -> void:
 
 
 func apply_gravity(delta: float) -> void:
-	var gravity := GameConfig.data.player_gravity
+	var config := GameConfig.data
+	var gravity := config.player_gravity
 	# Hang-time: reduce gravity near apex for floaty NBA Jam feel
-	if absf(height_velocity) < gravity * 0.15:
-		gravity *= 0.4
+	if absf(height_velocity) < gravity * config.player_hang_time_threshold:
+		gravity *= config.player_hang_time_gravity_factor
 	height_velocity -= gravity * delta
 	height += height_velocity * delta
 	if height <= 0.0:

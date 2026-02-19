@@ -8,7 +8,7 @@ func physics_process(delta: float) -> State:
 	player.apply_movement(delta)
 
 	var dir := player.get_input_direction()
-	if dir == Vector2.ZERO and player.velocity.length() < 10.0:
+	if dir == Vector2.ZERO and player.velocity.length() < GameConfig.data.player_idle_velocity_threshold:
 		return state_machine.get_state("Idle")
 
 	var wants_shoot := (Input.is_action_just_pressed("shoot") and player.is_human) or player.ai_shoot_requested

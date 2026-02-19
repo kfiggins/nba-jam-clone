@@ -33,7 +33,8 @@ func _physics_process(delta: float) -> void:
 		_steal_cooldown -= delta
 
 	if _think_timer <= 0.0:
-		_think_timer = GameConfig.data.ai_reaction_speed + randf_range(-0.05, 0.05)
+		var variance := GameConfig.data.ai_reaction_speed_variance
+		_think_timer = GameConfig.data.ai_reaction_speed + randf_range(-variance, variance)
 		_evaluate()
 
 
@@ -95,7 +96,7 @@ func _evaluate_offense_without_ball(ball: Ball) -> void:
 	var target := _pick_scoring_position(basket_pos)
 	var dist_to_target := player.global_position.distance_to(target)
 
-	if dist_to_target < 20.0:
+	if dist_to_target < GameConfig.data.ai_movement_stop_distance:
 		player.input_direction = Vector2.ZERO
 	else:
 		player.input_direction = (target - player.global_position).normalized()
@@ -135,7 +136,7 @@ func _evaluate_defense(ball: Ball) -> void:
 		return
 
 	# 4. Guard: move between handler and basket
-	var guard_pos := handler.global_position + (basket_pos - handler.global_position).normalized() * 30.0
+	var guard_pos := handler.global_position + (basket_pos - handler.global_position).normalized() * config.ai_guard_distance
 	player.input_direction = (guard_pos - player.global_position).normalized()
 	player.ai_sprint_requested = dist_to_handler > 100.0
 

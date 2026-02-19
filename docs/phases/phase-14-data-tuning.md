@@ -1,6 +1,6 @@
 # Phase 14: Data & Tuning
 
-**Status:** Not Started
+**Status:** Complete
 
 ## Goal
 
@@ -8,11 +8,11 @@ Easy balancing without code changes.
 
 ## Expose as Config
 
-- [ ] Player speed
-- [ ] Jump height
-- [ ] Shot success curve
-- [ ] Dunk range
-- [ ] Steal chance
-- [ ] AI difficulty
-- [ ] Fire streak threshold
-- [ ] Ball gravity / arc
+- [x] Player speed
+- [x] Jump height
+- [x] Shot success curve
+- [x] Dunk range
+- [x] Steal chance
+- [x] AI difficulty
+- [x] Fire streak threshold
+- [x] Ball gravity / arc

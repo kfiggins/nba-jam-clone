@@ -8,7 +8,7 @@ func physics_process(delta: float) -> State:
 
 	# Ground-plane movement with friction
 	ball.global_position += ball.ground_velocity * delta
-	ball.ground_velocity = ball.ground_velocity.move_toward(Vector2.ZERO, 200.0 * delta)
+	ball.ground_velocity = ball.ground_velocity.move_toward(Vector2.ZERO, GameConfig.data.ball_ground_friction * delta)
 
 	# Out-of-bounds: clamp ball to court bounds
 	var bounds := GameConfig.data.court_bounds
@@ -25,7 +25,7 @@ func physics_process(delta: float) -> State:
 		if p == null:
 			continue
 		var dist := ball.global_position.distance_to(p.global_position)
-		if dist <= config.ball_pickup_radius and ball.height <= 30.0:
+		if dist <= config.ball_pickup_radius and ball.height <= config.ball_pickup_height_threshold:
 			ball.pick_up(p)
 			return null
 

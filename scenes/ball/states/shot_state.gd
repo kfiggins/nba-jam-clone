@@ -42,7 +42,7 @@ func physics_process(delta: float) -> State:
 	var progress := clampf(1.0 - remaining / _total_distance, 0.0, 1.0)
 	var peak := config.shot_arc_height
 	var base_height := lerpf(_start_height, 0.0, progress)
-	ball.height = base_height + peak * 4.0 * progress * (1.0 - progress)
+	ball.height = base_height + peak * config.shot_arc_curve_factor * progress * (1.0 - progress)
 
 	# Block check during block window
 	_block_timer += delta
@@ -57,7 +57,7 @@ func physics_process(delta: float) -> State:
 			return null
 
 	# Reached the basket
-	if remaining <= 15.0:
+	if remaining <= config.shot_resolution_distance:
 		_resolve_shot()
 		return null
 
@@ -82,16 +82,16 @@ func _resolve_shot() -> void:
 		if shooter:
 			GameManager.add_score(shooter.team, points)
 		# Ball drops through basket
-		ball.ground_velocity = Vector2(0.0, 30.0)
-		ball.height = 10.0
-		ball.height_velocity = -50.0
+		ball.ground_velocity = config.shot_made_drop_velocity
+		ball.height = config.shot_made_height
+		ball.height_velocity = config.shot_made_height_velocity
 	else:
 		# Missed shot — ball bounces off rim
 		ball.shot_missed.emit(shooter)
 		var bounce_x := randf_range(-config.shot_miss_bounce_max, config.shot_miss_bounce_max)
 		var bounce_y := randf_range(-config.shot_miss_bounce_max, -config.shot_miss_bounce_min)
 		ball.ground_velocity = Vector2(bounce_x, bounce_y)
-		ball.height = _rim_height * 0.8
+		ball.height = _rim_height * config.shot_miss_rim_height_factor
 		ball.height_velocity = randf_range(config.shot_miss_bounce_min, config.shot_miss_bounce_max)
 
 	state_machine.change_state(state_machine.get_state("Loose"))
@@ -127,9 +127,9 @@ func _award_goaltending() -> void:
 	ball.shot_made.emit(shooter, points)
 	if shooter:
 		GameManager.add_score(shooter.team, points)
-	ball.ground_velocity = Vector2(0.0, 30.0)
-	ball.height = 10.0
-	ball.height_velocity = -50.0
+	ball.ground_velocity = config.shot_made_drop_velocity
+	ball.height = config.shot_made_height
+	ball.height_velocity = config.shot_made_height_velocity
 	state_machine.change_state(state_machine.get_state("Loose"))
 
 

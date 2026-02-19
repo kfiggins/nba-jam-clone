@@ -5,8 +5,6 @@ extends Camera2D
 
 const COURT_WIDTH := 1280.0
 const COURT_HEIGHT := 720.0
-const FOCUS_WEIGHT := 0.7
-const BASKET_WEIGHT := 0.3
 
 var _shake_intensity: float = 0.0
 var _shake_remaining: float = 0.0
@@ -70,10 +68,11 @@ func _get_target_position() -> Vector2:
 
 	# Blend in basket position to keep it visible
 	var basket_pos := _get_basket_position()
-	var target := focus * FOCUS_WEIGHT + basket_pos * BASKET_WEIGHT
+	var config := GameConfig.data
+	var target := focus * config.camera_focus_weight + basket_pos * config.camera_basket_weight
 
 	# Bias toward basket side
-	target.x += GameConfig.data.camera_offset_x
+	target.x += config.camera_offset_x
 
 	return target
 

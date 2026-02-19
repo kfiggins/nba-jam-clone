@@ -22,6 +22,9 @@ extends Resource
 @export var player_air_control: float = 0.3
 @export var player_acceleration: float = 1200.0
 @export var player_friction: float = 1000.0
+@export var player_idle_velocity_threshold: float = 10.0
+@export var player_hang_time_threshold: float = 0.15
+@export var player_hang_time_gravity_factor: float = 0.4
 
 # Turbo / stamina
 @export var turbo_max: float = 100.0
@@ -32,8 +35,14 @@ extends Resource
 @export var ball_gravity: float = 800.0
 @export var ball_bounce_factor: float = 0.6
 @export var ball_pickup_radius: float = 30.0
+@export var ball_ground_friction: float = 200.0
+@export var ball_pickup_height_threshold: float = 30.0
+@export var ball_hold_offset: Vector2 = Vector2(15.0, -5.0)
+@export var ball_hold_height_offset: float = 20.0
 @export var pass_speed: float = 600.0
 @export var pass_arc_height: float = 40.0
+@export var pass_initial_height: float = 20.0
+@export var pass_arc_curve_factor: float = 4.0
 @export var steal_range: float = 40.0
 
 # Shooting
@@ -43,15 +52,22 @@ extends Resource
 @export var shot_perfect_bonus: float = 0.25
 @export var shot_speed: float = 500.0
 @export var shot_arc_height: float = 200.0
+@export var shot_arc_curve_factor: float = 4.0
 @export var shot_close_range: float = 200.0
 @export var shot_release_delay: float = 0.15 # seconds before ball released during jump
+@export var shot_resolution_distance: float = 15.0
+@export var shot_made_drop_velocity: Vector2 = Vector2(0.0, 30.0)
+@export var shot_made_height: float = 10.0
+@export var shot_made_height_velocity: float = -50.0
 @export var shot_miss_bounce_min: float = 100.0
 @export var shot_miss_bounce_max: float = 200.0
+@export var shot_miss_rim_height_factor: float = 0.8
 
 # Dunk
 @export var dunk_range: float = 100.0
 @export var dunk_jump_threshold: float = 0.6
 @export var dunk_speed: float = 400.0
+@export var dunk_trigger_distance: float = 25.0
 
 # Defense
 @export var steal_chance_base: float = 0.3
@@ -84,6 +100,9 @@ extends Resource
 @export var ai_block_react_range: float = 80.0
 @export var ai_steal_cooldown: float = 1.0
 @export var ai_recovery_threshold: float = 30.0
+@export var ai_reaction_speed_variance: float = 0.05
+@export var ai_movement_stop_distance: float = 20.0
+@export var ai_guard_distance: float = 30.0
 
 # Camera
 @export var camera_smooth_speed: float = 5.0
@@ -92,6 +111,8 @@ extends Resource
 @export var camera_action_range: float = 200.0
 @export var camera_zoom_smooth_speed: float = 3.0
 @export var camera_offset_x: float = 50.0
+@export var camera_focus_weight: float = 0.7
+@export var camera_basket_weight: float = 0.3
 
 # On Fire
 @export var fire_streak_threshold: int = 3
