@@ -1,12 +1,12 @@
 # Phase 16: Stretch Features (Low Priority)
 
-**Status:** Not Started
+**Status:** Complete
 
 ## Features
 
-- [ ] Local multiplayer (2-4 players)
-- [ ] Character stats / archetypes
-- [ ] Replay camera on dunk
-- [ ] Commentary text system
+- [x] Local multiplayer (2-4 players)
+- [x] Character stats / archetypes
+- [x] Replay camera on dunk
+- [x] Commentary text system
 - [ ] Power-ups
 - [ ] Online multiplayer (future)

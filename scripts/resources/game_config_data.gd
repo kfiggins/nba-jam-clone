@@ -118,6 +118,12 @@ extends Resource
 @export var fire_streak_threshold: int = 3
 @export var fire_shot_bonus: float = 0.3
 
+# Replay
+@export var replay_duration: float = 1.5
+@export var replay_slow_mo_scale: float = 0.3
+@export var camera_replay_zoom: float = 1.3
+@export var enable_dunk_replay: bool = true
+
 # Juice / Feedback
 @export var shake_dunk_intensity: float = 8.0
 @export var shake_dunk_duration: float = 0.3

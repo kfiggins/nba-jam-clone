@@ -67,7 +67,8 @@ func _find_blocker() -> Player:
 		if p.is_on_ground() or p.height < config.block_height_min:
 			continue
 		var dist := player.global_position.distance_to(p.global_position)
-		if dist <= config.block_range:
+		var effective_block_range := config.block_range * p.get_stat_modifier("block")
+		if dist <= effective_block_range:
 			return p
 	return null
 

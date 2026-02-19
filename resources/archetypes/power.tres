@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PlayerArchetype" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/player_archetype.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+archetype_name = "Power"
+speed_modifier = 0.85
+jump_modifier = 1.2
+shot_accuracy_modifier = 0.9
+steal_modifier = 0.9
+dunk_modifier = 1.3
+block_modifier = 1.3

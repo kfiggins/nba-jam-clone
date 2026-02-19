@@ -58,29 +58,34 @@ func test_clock_formats_zero() -> void:
 # Shot feedback tests
 # =============================================================================
 
-func test_shot_made_shows_swish() -> void:
+func test_shot_made_shows_feedback() -> void:
 	_hud.on_shot_made(2)
-	assert_eq(_get_label("ShotFeedback").text, "SWISH!")
+	var text := _get_label("ShotFeedback").text
+	assert_true(text.length() > 0, "Shot made should show commentary text")
 
-func test_three_pointer_shows_downtown() -> void:
+func test_three_pointer_shows_feedback() -> void:
 	_hud.on_shot_made(3)
-	assert_eq(_get_label("ShotFeedback").text, "FROM DOWNTOWN!")
+	var text := _get_label("ShotFeedback").text
+	assert_true(text.length() > 0, "Three pointer should show commentary text")
 
-func test_dunk_shows_slam_dunk() -> void:
+func test_dunk_shows_feedback() -> void:
 	_hud.on_dunk_made()
-	assert_eq(_get_label("ShotFeedback").text, "SLAM DUNK!")
+	var text := _get_label("ShotFeedback").text
+	assert_true(text.length() > 0, "Dunk should show commentary text")
 
-func test_blocked_shows_blocked() -> void:
+func test_blocked_shows_feedback() -> void:
 	_hud.on_shot_blocked()
-	assert_eq(_get_label("ShotFeedback").text, "BLOCKED!")
+	var text := _get_label("ShotFeedback").text
+	assert_true(text.length() > 0, "Block should show commentary text")
 
-func test_stolen_shows_stolen() -> void:
+func test_stolen_shows_feedback() -> void:
 	_hud.on_ball_stolen()
-	assert_eq(_get_label("ShotFeedback").text, "STOLEN!")
+	var text := _get_label("ShotFeedback").text
+	assert_true(text.length() > 0, "Steal should show commentary text")
 
 func test_feedback_clears_on_timer() -> void:
 	_hud.on_shot_made(2)
-	assert_eq(_get_label("ShotFeedback").text, "SWISH!")
+	assert_true(_get_label("ShotFeedback").text.length() > 0)
 	_hud._on_feedback_timer_timeout()
 	assert_eq(_get_label("ShotFeedback").text, "")
 
@@ -92,7 +97,8 @@ func test_feedback_clears_on_timer() -> void:
 func test_fire_indicator_shows_on_fire() -> void:
 	var p := Player.new()
 	_hud.on_player_caught_fire(p)
-	assert_eq(_get_label("FireIndicator").text, "HE'S ON FIRE!")
+	var text := _get_label("FireIndicator").text
+	assert_true(text.length() > 0, "Fire indicator should show commentary text")
 	p.queue_free()
 
 func test_fire_indicator_hides_on_end() -> void:
@@ -108,7 +114,7 @@ func test_fire_stays_if_multiple_players() -> void:
 	_hud.on_player_caught_fire(p1)
 	_hud.on_player_caught_fire(p2)
 	_hud.on_player_fire_ended(p1)
-	assert_eq(_get_label("FireIndicator").text, "HE'S ON FIRE!",
+	assert_true(_get_label("FireIndicator").text.length() > 0,
 		"Should stay visible while any player is on fire")
 	p1.queue_free()
 	p2.queue_free()

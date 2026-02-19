@@ -152,6 +152,8 @@ func _calculate_steal_chance(stealer: Player) -> float:
 		else:
 			chance += config.steal_facing_penalty * facing_dot
 
+	# Archetype modifier
+	chance *= stealer.get_stat_modifier("steal")
 	return clampf(chance, 0.05, 0.95)
 
 
@@ -168,7 +170,8 @@ func check_shot_block(shooter: Player) -> Player:
 		if p.is_on_ground() or p.height < config.block_height_min:
 			continue
 		var dist := global_position.distance_to(p.global_position)
-		if dist <= config.block_range:
+		var effective_block_range := config.block_range * p.get_stat_modifier("block")
+		if dist <= effective_block_range:
 			return p
 	return null
 

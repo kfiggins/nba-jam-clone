@@ -12,9 +12,13 @@ extends CanvasLayer
 @onready var feedback_timer: Timer = %FeedbackTimer
 
 var _fire_players: Array[Player] = []
+var commentary: CommentarySystem
 
 
 func _ready() -> void:
+	commentary = CommentarySystem.new()
+	commentary.name = "CommentarySystem"
+	add_child(commentary)
 	GameManager.score_changed.connect(_on_score_changed)
 	GameManager.clock_updated.connect(_on_clock_updated)
 	GameManager.countdown_tick.connect(_on_countdown_tick)
@@ -86,22 +90,32 @@ func show_shot_feedback(text: String) -> void:
 
 
 func on_shot_made(points: int) -> void:
-	if points >= 3:
-		show_shot_feedback("FROM DOWNTOWN!")
-	else:
-		show_shot_feedback("SWISH!")
+	var event_type := "shot_3pt" if points >= 3 else "shot_2pt"
+	show_shot_feedback(commentary.track_event(event_type))
 
 
 func on_dunk_made() -> void:
-	show_shot_feedback("SLAM DUNK!")
+	show_shot_feedback(commentary.track_event("dunk"))
 
 
 func on_shot_blocked() -> void:
-	show_shot_feedback("BLOCKED!")
+	show_shot_feedback(commentary.track_event("block"))
+	commentary.reset_streak("dunk")
+	commentary.reset_streak("shot_2pt")
+	commentary.reset_streak("shot_3pt")
 
 
 func on_ball_stolen() -> void:
-	show_shot_feedback("STOLEN!")
+	show_shot_feedback(commentary.track_event("steal"))
+	commentary.reset_streak("dunk")
+	commentary.reset_streak("shot_2pt")
+	commentary.reset_streak("shot_3pt")
+
+
+func on_shot_missed() -> void:
+	commentary.reset_streak("dunk")
+	commentary.reset_streak("shot_2pt")
+	commentary.reset_streak("shot_3pt")
 
 
 func _on_feedback_timer_timeout() -> void:
@@ -123,7 +137,7 @@ func on_player_fire_ended(player: Player) -> void:
 
 func _update_fire_display() -> void:
 	if _fire_players.size() > 0:
-		fire_indicator_label.text = "HE'S ON FIRE!"
+		fire_indicator_label.text = commentary.get_commentary("on_fire")
 	else:
 		fire_indicator_label.text = ""
 

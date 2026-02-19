@@ -17,8 +17,8 @@ func physics_process(delta: float) -> State:
 	if dir != Vector2.ZERO:
 		return state_machine.get_state("Running")
 
-	var wants_shoot := (Input.is_action_just_pressed("shoot") and player.is_human) or player.ai_shoot_requested
-	var wants_pass := (Input.is_action_just_pressed("pass_ball") and player.is_human) or player.ai_pass_requested
+	var wants_shoot := player.wants_action("shoot", player.ai_shoot_requested)
+	var wants_pass := player.wants_action("pass_ball", player.ai_pass_requested)
 
 	if wants_shoot:
 		if player.has_ball() and not player.is_block_stunned():

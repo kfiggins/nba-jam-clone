@@ -11,6 +11,8 @@ signal fire_ended
 
 @export var team: int = 1
 @export var is_human: bool = true
+@export var archetype: PlayerArchetype
+@export var player_index: int = 0
 
 ## Pseudo-3D height (0 = on ground)
 var height: float = 0.0
@@ -97,12 +99,44 @@ func apply_bump() -> void:
 	bump_slow_timer = GameConfig.data.bump_duration
 
 
+func get_action_name(base_action: String) -> String:
+	if player_index == 0:
+		return base_action
+	return "p%d_%s" % [player_index + 1, base_action]
+
+
+func wants_action(base_action: String, ai_flag: bool) -> bool:
+	if is_human:
+		return Input.is_action_just_pressed(get_action_name(base_action))
+	return ai_flag
+
+
+func get_stat_modifier(stat: String) -> float:
+	if archetype == null:
+		return 1.0
+	match stat:
+		"speed":
+			return archetype.speed_modifier
+		"jump":
+			return archetype.jump_modifier
+		"shot_accuracy":
+			return archetype.shot_accuracy_modifier
+		"steal":
+			return archetype.steal_modifier
+		"dunk":
+			return archetype.dunk_modifier
+		"block":
+			return archetype.block_modifier
+	return 1.0
+
+
 func get_move_speed() -> float:
 	var speed: float
 	if is_sprinting():
 		speed = GameConfig.data.player_sprint_speed
 	else:
 		speed = GameConfig.data.player_speed
+	speed *= get_stat_modifier("speed")
 	if is_bumped():
 		speed *= GameConfig.data.bump_speed_reduction
 	return speed
@@ -110,7 +144,7 @@ func get_move_speed() -> float:
 
 func is_sprinting() -> bool:
 	if is_human:
-		return Input.is_action_pressed("turbo") and turbo > 0.0
+		return Input.is_action_pressed(get_action_name("turbo")) and turbo > 0.0
 	return ai_sprint_requested and turbo > 0.0
 
 
@@ -125,7 +159,7 @@ func update_turbo(delta: float) -> void:
 
 
 func apply_jump() -> void:
-	height_velocity = GameConfig.data.player_jump_force
+	height_velocity = GameConfig.data.player_jump_force * get_stat_modifier("jump")
 	jumped.emit()
 
 
@@ -147,8 +181,8 @@ func get_input_direction() -> Vector2:
 	if not is_human:
 		return input_direction
 	return Vector2(
-		Input.get_axis("move_left", "move_right"),
-		Input.get_axis("move_up", "move_down")
+		Input.get_axis(get_action_name("move_left"), get_action_name("move_right")),
+		Input.get_axis(get_action_name("move_up"), get_action_name("move_down"))
 	).normalized()
 
 
@@ -212,9 +246,10 @@ func has_ball() -> bool:
 func is_in_dunk_range() -> bool:
 	if not has_ball():
 		return false
+	var effective_range := GameConfig.data.dunk_range * get_stat_modifier("dunk")
 	for node in get_tree().get_nodes_in_group("basket"):
 		var dist := global_position.distance_to(node.global_position)
-		if dist <= GameConfig.data.dunk_range:
+		if dist <= effective_range:
 			return true
 	return false
 

@@ -2,17 +2,22 @@ extends Node2D
 ## Main scene. Wires up HUD, handles match start/restart, attaches AI controllers,
 ## manages possession resets, streak tracking, HUD feedback, and juice effects.
 
+var _replay_system: ReplaySystem
+var _player_scene: PackedScene = preload("res://scenes/player/player.tscn")
+
+## Default configs: 1 human P1 team 1, 3 AI
+const DEFAULT_SPAWN_POSITIONS := [
+	Vector2(400, 400), Vector2(350, 300),
+	Vector2(800, 400), Vector2(750, 300),
+]
+
 
 func _ready() -> void:
-	for node in get_tree().get_nodes_in_group("players"):
-		var p := node as Player
-		if p and not p.is_human:
-			var controller := AIController.new()
-			controller.name = "AIController"
-			p.add_child(controller)
-		if p:
-			p.caught_fire.connect(_on_player_caught_fire.bind(p))
-			p.fire_ended.connect(_on_player_fire_ended.bind(p))
+	_replay_system = ReplaySystem.new()
+	_replay_system.name = "ReplaySystem"
+	_replay_system.replay_ended.connect(_on_replay_ended)
+	add_child(_replay_system)
+	_setup_players()
 	GameManager.possession_reset.connect(_on_possession_reset)
 	GameManager.game_state_changed.connect(_on_game_state_changed)
 	var ball := _get_ball()
@@ -23,6 +28,38 @@ func _ready() -> void:
 		ball.shot_blocked.connect(_on_shot_blocked)
 		ball.ball_stolen.connect(_on_ball_stolen)
 		ball.owner_changed.connect(_on_owner_changed)
+
+
+func _setup_players() -> void:
+	for node in get_tree().get_nodes_in_group("players"):
+		var p := node as Player
+		if p and not p.is_human:
+			var controller := AIController.new()
+			controller.name = "AIController"
+			p.add_child(controller)
+		if p:
+			p.caught_fire.connect(_on_player_caught_fire.bind(p))
+			p.fire_ended.connect(_on_player_fire_ended.bind(p))
+
+
+func spawn_players(configs: Array) -> void:
+	# Remove existing players
+	for node in get_tree().get_nodes_in_group("players"):
+		node.queue_free()
+	# Wait one frame for queue_free to process
+	await get_tree().process_frame
+	# Spawn new players
+	for i in range(configs.size()):
+		var config: PlayerSetupData = configs[i]
+		var p: Player = _player_scene.instantiate()
+		p.team = config.team
+		p.is_human = config.is_human
+		p.player_index = config.player_index
+		if config.archetype:
+			p.archetype = config.archetype
+		p.position = config.spawn_position if config.spawn_position != Vector2.ZERO else DEFAULT_SPAWN_POSITIONS[i % DEFAULT_SPAWN_POSITIONS.size()]
+		add_child(p)
+	_setup_players()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -64,11 +101,25 @@ func _on_dunk_made(dunker: Player, _points: int) -> void:
 	if basket:
 		basket.rim_shake()
 	AudioManager.play_sfx("dunk")
+	# Dunk replay
+	if config.enable_dunk_replay and dunker:
+		if camera:
+			camera.set_replay_target(dunker)
+		_replay_system.start_replay(dunker, config.replay_duration, config.replay_slow_mo_scale)
+
+
+func _on_replay_ended() -> void:
+	var camera := _get_camera()
+	if camera:
+		camera.clear_replay_target()
 
 
 func _on_shot_missed(shooter: Player) -> void:
 	if shooter:
 		shooter.reset_streak()
+	var hud := _get_hud()
+	if hud:
+		hud.on_shot_missed()
 
 
 func _on_shot_blocked(_blocker: Player, shooter: Player) -> void:

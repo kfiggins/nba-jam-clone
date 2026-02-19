@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="PlayerArchetype" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/resources/player_archetype.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+archetype_name = "Balanced"
+speed_modifier = 1.0
+jump_modifier = 1.0
+shot_accuracy_modifier = 1.0
+steal_modifier = 1.0
+dunk_modifier = 1.0
+block_modifier = 1.0

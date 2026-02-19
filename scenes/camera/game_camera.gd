@@ -9,6 +9,7 @@ const COURT_HEIGHT := 720.0
 var _shake_intensity: float = 0.0
 var _shake_remaining: float = 0.0
 var _shake_duration: float = 0.0
+var _replay_target: Player = null
 
 
 func _ready() -> void:
@@ -17,6 +18,14 @@ func _ready() -> void:
 	limit_right = int(COURT_WIDTH)
 	limit_top = 0
 	limit_bottom = int(COURT_HEIGHT)
+
+
+func set_replay_target(player: Player) -> void:
+	_replay_target = player
+
+
+func clear_replay_target() -> void:
+	_replay_target = null
 
 
 func shake(intensity: float, duration: float) -> void:
@@ -50,6 +59,9 @@ func _update_shake(delta: float) -> void:
 
 
 func _get_target_position() -> Vector2:
+	if _replay_target and is_instance_valid(_replay_target):
+		return _replay_target.global_position
+
 	var ball := _get_ball()
 	if not ball:
 		return Vector2(COURT_WIDTH * 0.5, COURT_HEIGHT * 0.5)
@@ -79,14 +91,17 @@ func _get_target_position() -> Vector2:
 
 func _update_zoom(delta: float) -> void:
 	var config := GameConfig.data
-	var ball := _get_ball()
 	var target_zoom := config.camera_zoom_base
 
-	if ball:
-		var basket_pos := _get_basket_position()
-		var dist := ball.global_position.distance_to(basket_pos)
-		if dist < config.camera_action_range:
-			target_zoom = config.camera_zoom_action
+	if _replay_target and is_instance_valid(_replay_target):
+		target_zoom = config.camera_replay_zoom
+	else:
+		var ball := _get_ball()
+		if ball:
+			var basket_pos := _get_basket_position()
+			var dist := ball.global_position.distance_to(basket_pos)
+			if dist < config.camera_action_range:
+				target_zoom = config.camera_zoom_action
 
 	var current := zoom.x
 	var new_zoom := lerpf(current, target_zoom, config.camera_zoom_smooth_speed * delta)

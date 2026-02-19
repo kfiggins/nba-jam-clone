@@ -110,6 +110,9 @@ func _calculate_success_chance(distance: float) -> float:
 	# On Fire bonus
 	if ball.shot_shooter and ball.shot_shooter.is_on_fire:
 		chance += config.fire_shot_bonus
+	# Archetype modifier
+	if ball.shot_shooter:
+		chance *= ball.shot_shooter.get_stat_modifier("shot_accuracy")
 	return clampf(chance, 0.0, 1.0)
 
 
