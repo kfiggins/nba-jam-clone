@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/court/court.tscn" id="2"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/ball/ball.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/court/basket.tscn" id="6"]
+[ext_resource type="Script" path="res://scenes/camera/game_camera.gd" id="7"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1")
@@ -36,5 +37,9 @@ is_human = false
 
 [node name="Ball" parent="." instance=ExtResource("5")]
 position = Vector2(640, 350)
+
+[node name="GameCamera" type="Camera2D" parent="."]
+position = Vector2(640, 360)
+script = ExtResource("7")
 
 [node name="HUD" parent="." instance=ExtResource("3")]

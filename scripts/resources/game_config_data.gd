@@ -79,6 +79,14 @@ extends Resource
 @export var ai_steal_cooldown: float = 1.0
 @export var ai_recovery_threshold: float = 30.0
 
+# Camera
+@export var camera_smooth_speed: float = 5.0
+@export var camera_zoom_base: float = 1.0
+@export var camera_zoom_action: float = 1.15
+@export var camera_action_range: float = 200.0
+@export var camera_zoom_smooth_speed: float = 3.0
+@export var camera_offset_x: float = 50.0
+
 # On Fire
 @export var fire_streak_threshold: int = 3
 @export var fire_shot_bonus: float = 0.3

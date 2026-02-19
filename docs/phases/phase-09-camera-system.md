@@ -1,6 +1,6 @@
 # Phase 9: Camera System
 
-**Status:** Not Started
+**Status:** Complete
 
 ## Goal
 
@@ -8,8 +8,8 @@ Always readable, arcade framing.
 
 ## Features
 
-- [ ] Fixed angled camera (Jam-style)
-- [ ] Track ball + nearest players
-- [ ] Keep basket visible
-- [ ] Smooth follow (no jitter)
-- [ ] Slight zoom when action near rim (optional)
+- [x] Fixed angled camera (Jam-style)
+- [x] Track ball + nearest players
+- [x] Keep basket visible
+- [x] Smooth follow (no jitter)
+- [x] Slight zoom when action near rim (optional)
