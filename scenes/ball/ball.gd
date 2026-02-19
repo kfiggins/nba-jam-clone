@@ -10,6 +10,7 @@ signal shot_taken(shooter: Player)
 signal shot_made(shooter: Player, points: int)
 signal shot_missed(shooter: Player)
 signal dunk_made(dunker: Player, points: int)
+signal shot_blocked(blocker: Player, shooter: Player)
 
 ## Current player holding the ball (null = loose)
 var current_owner: Player = null
@@ -121,6 +122,36 @@ func attempt_steal(stealer: Player) -> bool:
 		pick_up(stealer)
 		return true
 	return false
+
+
+## Check if any opponent defender can block the shot.
+## Returns the blocking player, or null if no block occurs.
+func check_shot_block(shooter: Player) -> Player:
+	var config := GameConfig.data
+	for node in get_tree().get_nodes_in_group("players"):
+		var p := node as Player
+		if p == null or p == shooter:
+			continue
+		if p.team == shooter.team:
+			continue
+		if p.is_on_ground() or p.height < config.block_height_min:
+			continue
+		var dist := global_position.distance_to(p.global_position)
+		if dist <= config.block_range:
+			return p
+	return null
+
+
+## Deflect the ball away from the blocker after a successful block.
+func deflect(blocker: Player, shooter: Player) -> void:
+	var config := GameConfig.data
+	shot_blocked.emit(blocker, shooter)
+	var deflect_dir := (global_position - blocker.global_position).normalized()
+	if deflect_dir == Vector2.ZERO:
+		deflect_dir = Vector2.RIGHT
+	ground_velocity = deflect_dir * config.block_deflect_ground_speed
+	height_velocity = config.block_deflect_height_vel
+	state_machine.change_state(state_machine.get_state("Loose"))
 
 
 ## Apply gravity to height with bounce.

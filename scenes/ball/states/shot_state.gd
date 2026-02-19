@@ -8,9 +8,11 @@ var _target_pos: Vector2
 var _total_distance: float = 0.0
 var _start_height: float = 0.0
 var _rim_height: float = 120.0
+var _block_timer: float = 0.0
 
 
 func enter() -> void:
+	_block_timer = 0.0
 	_start_pos = ball.global_position
 	_start_height = ball.height
 	ball.height_velocity = 0.0
@@ -41,6 +43,18 @@ func physics_process(delta: float) -> State:
 	var peak := config.shot_arc_height
 	var base_height := lerpf(_start_height, 0.0, progress)
 	ball.height = base_height + peak * 4.0 * progress * (1.0 - progress)
+
+	# Block check during block window
+	_block_timer += delta
+	if _block_timer <= config.block_window and ball.shot_shooter:
+		var blocker := ball.check_shot_block(ball.shot_shooter)
+		if blocker:
+			if config.enable_goaltending and progress >= config.goaltending_progress:
+				_award_goaltending()
+				return null
+			ball.shot_shooter.apply_block_stun()
+			ball.deflect(blocker, ball.shot_shooter)
+			return null
 
 	# Reached the basket
 	if remaining <= 15.0:
@@ -91,6 +105,19 @@ func _calculate_success_chance(distance: float) -> float:
 	var far_range := config.shot_close_range * 3.0
 	var t := clampf((distance - config.shot_close_range) / (far_range - config.shot_close_range), 0.0, 1.0)
 	return lerpf(config.shot_success_close, config.shot_success_base, t)
+
+
+func _award_goaltending() -> void:
+	var config := GameConfig.data
+	var shooter := ball.shot_shooter
+	var points := config.points_per_shot
+	ball.shot_made.emit(shooter, points)
+	if shooter:
+		GameManager.add_score(shooter.team, points)
+	ball.ground_velocity = Vector2(0.0, 30.0)
+	ball.height = 10.0
+	ball.height_velocity = -50.0
+	state_machine.change_state(state_machine.get_state("Loose"))
 
 
 func _find_basket() -> Node:

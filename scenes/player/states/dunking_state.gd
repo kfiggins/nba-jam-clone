@@ -41,8 +41,35 @@ func physics_process(delta: float) -> State:
 
 func _perform_dunk() -> void:
 	_dunked = true
-	if player.has_ball():
-		player.try_dunk()
+	if not player.has_ball():
+		return
+
+	# Check for block before dunking
+	var blocker := _find_blocker()
+	if blocker:
+		var ball_node := player.held_ball
+		ball_node.release(Vector2.ZERO, 0.0)
+		ball_node.deflect(blocker, player)
+		player.apply_block_stun()
+		return
+
+	player.try_dunk()
+
+
+func _find_blocker() -> Player:
+	var config := GameConfig.data
+	for node in player.get_tree().get_nodes_in_group("players"):
+		var p := node as Player
+		if p == null or p == player:
+			continue
+		if p.team == player.team:
+			continue
+		if p.is_on_ground() or p.height < config.block_height_min:
+			continue
+		var dist := player.global_position.distance_to(p.global_position)
+		if dist <= config.block_range:
+			return p
+	return null
 
 
 func _find_basket_position() -> Vector2:

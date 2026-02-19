@@ -52,6 +52,13 @@ extends Resource
 @export var steal_cooldown: float = 0.5
 @export var steal_stun_duration: float = 0.3
 @export var block_window: float = 0.3
+@export var block_range: float = 60.0
+@export var block_height_min: float = 30.0
+@export var block_stun_duration: float = 0.4
+@export var block_deflect_height_vel: float = 150.0
+@export var block_deflect_ground_speed: float = 200.0
+@export var enable_goaltending: bool = true
+@export var goaltending_progress: float = 0.6
 
 # AI
 @export var ai_reaction_speed: float = 0.3

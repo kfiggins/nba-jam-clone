@@ -1,6 +1,6 @@
 # Phase 6: Blocking System
 
-**Status:** Not Started
+**Status:** Complete
 
 ## Goal
 
@@ -8,8 +8,8 @@ Defensive counterplay.
 
 ## Features
 
-- [ ] Jump + block input
-- [ ] Block window during opponent shot/dunk
-- [ ] Ball deflection on successful block
-- [ ] Goaltending rule (optional toggle)
-- [ ] Block stun for attacker
+- [x] Jump + block input
+- [x] Block window during opponent shot/dunk
+- [x] Ball deflection on successful block
+- [x] Goaltending rule (optional toggle)
+- [x] Block stun for attacker

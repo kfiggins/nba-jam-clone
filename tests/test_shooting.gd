@@ -280,8 +280,8 @@ func test_made_shot_emits_shot_made() -> void:
 			break
 		_ball.state_machine.current_state.physics_process(0.05)
 	# With seed 42 and close range, at least one of the signals should have fired
-	var made := get_signal_emit_count(_ball, "shot_made")
-	var missed := get_signal_emit_count(_ball, "shot_missed")
+	var made: int = get_signal_emit_count(_ball, "shot_made")
+	var missed: int = get_signal_emit_count(_ball, "shot_missed")
 	assert_eq(made + missed, 1, "Exactly one resolution signal should fire")
 
 

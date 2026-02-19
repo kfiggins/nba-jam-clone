@@ -24,6 +24,7 @@ var facing_direction: Vector2 = Vector2.RIGHT
 ## Ball interaction
 var held_ball: Ball = null
 var steal_cooldown_timer: float = 0.0
+var block_stun_timer: float = 0.0
 
 @onready var sprite: Node2D = $Sprite
 @onready var shadow: Node2D = $Shadow
@@ -42,11 +43,21 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if steal_cooldown_timer > 0.0:
 		steal_cooldown_timer -= delta
+	if block_stun_timer > 0.0:
+		block_stun_timer -= delta
 	_update_visual_height()
 
 
 func is_on_ground() -> bool:
 	return height <= 0.0 and height_velocity <= 0.0
+
+
+func is_block_stunned() -> bool:
+	return block_stun_timer > 0.0
+
+
+func apply_block_stun() -> void:
+	block_stun_timer = GameConfig.data.block_stun_duration
 
 
 func get_move_speed() -> float:
