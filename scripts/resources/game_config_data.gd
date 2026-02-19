@@ -7,6 +7,12 @@ extends Resource
 @export var points_per_shot: int = 2
 @export var points_per_three: int = 3
 @export var enable_three_point_zone: bool = false
+@export var three_point_distance: float = 400.0
+@export var score_pause_duration: float = 1.0
+@export var inbound_position: Vector2 = Vector2(300, 360)
+@export var court_bounds: Rect2 = Rect2(80, 80, 1120, 560)
+@export var enable_shot_clock: bool = false
+@export var shot_clock_duration: float = 24.0
 
 # Player movement
 @export var player_speed: float = 300.0

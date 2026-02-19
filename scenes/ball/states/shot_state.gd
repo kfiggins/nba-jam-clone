@@ -77,7 +77,7 @@ func _resolve_shot() -> void:
 
 	if roll < success_chance:
 		# Made shot
-		var points := config.points_per_shot
+		var points := _get_points(config, distance)
 		ball.shot_made.emit(shooter, points)
 		if shooter:
 			GameManager.add_score(shooter.team, points)
@@ -107,10 +107,17 @@ func _calculate_success_chance(distance: float) -> float:
 	return lerpf(config.shot_success_close, config.shot_success_base, t)
 
 
+func _get_points(config: GameConfigData, distance: float) -> int:
+	if config.enable_three_point_zone and distance > config.three_point_distance:
+		return config.points_per_three
+	return config.points_per_shot
+
+
 func _award_goaltending() -> void:
 	var config := GameConfig.data
 	var shooter := ball.shot_shooter
-	var points := config.points_per_shot
+	var distance := _start_pos.distance_to(_target_pos)
+	var points := _get_points(config, distance)
 	ball.shot_made.emit(shooter, points)
 	if shooter:
 		GameManager.add_score(shooter.team, points)

@@ -1,5 +1,6 @@
 extends Node2D
-## Main scene. Wires up HUD, handles match start/restart, and attaches AI controllers.
+## Main scene. Wires up HUD, handles match start/restart, attaches AI controllers,
+## and manages possession resets after scoring.
 
 
 func _ready() -> void:
@@ -9,6 +10,7 @@ func _ready() -> void:
 			var controller := AIController.new()
 			controller.name = "AIController"
 			p.add_child(controller)
+	GameManager.possession_reset.connect(_on_possession_reset)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -18,3 +20,30 @@ func _unhandled_input(event: InputEvent) -> void:
 				GameManager.start_match()
 			GameManager.MatchState.RESULTS:
 				GameManager.restart()
+
+
+func _on_possession_reset(receiving_team: int) -> void:
+	var ball := _get_ball()
+	var receiver := _get_inbound_player(receiving_team)
+	if ball and receiver:
+		ball.reset_to(GameConfig.data.inbound_position, receiver)
+
+
+func _get_ball() -> Ball:
+	for node in get_tree().get_nodes_in_group("ball"):
+		return node as Ball
+	return null
+
+
+func _get_inbound_player(team: int) -> Player:
+	var best: Player = null
+	var best_dist := INF
+	var inbound_pos := GameConfig.data.inbound_position
+	for node in get_tree().get_nodes_in_group("players"):
+		var p := node as Player
+		if p and p.team == team:
+			var dist := p.global_position.distance_to(inbound_pos)
+			if dist < best_dist:
+				best_dist = dist
+				best = p
+	return best

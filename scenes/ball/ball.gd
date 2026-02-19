@@ -183,6 +183,21 @@ func deflect(blocker: Player, shooter: Player) -> void:
 	state_machine.change_state(state_machine.get_state("Loose"))
 
 
+## Reset ball to a position and optionally give to a receiver.
+func reset_to(pos: Vector2, receiver: Player = null) -> void:
+	if current_owner:
+		current_owner.held_ball = null
+		current_owner = null
+	global_position = pos
+	height = 0.0
+	height_velocity = 0.0
+	ground_velocity = Vector2.ZERO
+	if receiver:
+		pick_up(receiver)
+	else:
+		state_machine.change_state(state_machine.get_state("Loose"))
+
+
 ## Apply gravity to height with bounce.
 func apply_ball_gravity(delta: float) -> void:
 	height_velocity -= GameConfig.data.ball_gravity * delta
