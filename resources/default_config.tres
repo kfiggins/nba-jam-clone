@@ -34,6 +34,7 @@ shot_miss_bounce_min = 100.0
 shot_miss_bounce_max = 200.0
 dunk_range = 100.0
 dunk_jump_threshold = 0.6
+dunk_speed = 400.0
 steal_chance_base = 0.3
 steal_cooldown = 0.5
 steal_stun_duration = 0.3

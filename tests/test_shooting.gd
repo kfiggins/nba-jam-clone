@@ -15,6 +15,10 @@ func before_each() -> void:
 	_manager = load("res://scripts/autoload/game_manager.gd").new()
 	_manager.name = "GameManager"
 	add_child(_manager)
+	# Reset global autoload state (ball code uses the autoload, not our local node)
+	GameManager.scores = [0, 0]
+	GameManager.state = GameManager.MatchState.PREGAME
+	GameManager.time_remaining = 120.0
 
 
 func after_each() -> void:
@@ -84,6 +88,9 @@ func _add_ball(pos: Vector2 = Vector2(400, 300)) -> void:
 	shot.name = "Shot"
 	sm.add_child(shot)
 	_ball.add_child(sm)
+	# Set owner so BallState._ready() finds the Ball reference
+	for state_node in sm.get_children():
+		state_node.owner = _ball
 	_ball.add_to_group("ball")
 	add_child(_ball)
 

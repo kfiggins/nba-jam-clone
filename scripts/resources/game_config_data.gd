@@ -45,6 +45,7 @@ extends Resource
 # Dunk
 @export var dunk_range: float = 100.0
 @export var dunk_jump_threshold: float = 0.6
+@export var dunk_speed: float = 400.0
 
 # Defense
 @export var steal_chance_base: float = 0.3

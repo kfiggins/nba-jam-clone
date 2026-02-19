@@ -9,6 +9,7 @@ signal ball_bounced
 signal shot_taken(shooter: Player)
 signal shot_made(shooter: Player, points: int)
 signal shot_missed(shooter: Player)
+signal dunk_made(dunker: Player, points: int)
 
 ## Current player holding the ball (null = loose)
 var current_owner: Player = null
@@ -87,6 +88,23 @@ func shoot(shooter: Player) -> void:
 	shot_taken.emit(shooter)
 	owner_changed.emit(old, null)
 	state_machine.change_state(state_machine.get_state("Shot"))
+
+
+## Dunk the ball through the basket. Guaranteed score.
+func dunk(dunker: Player) -> void:
+	if current_owner:
+		current_owner.held_ball = null
+	var old := current_owner
+	current_owner = null
+	var points := GameConfig.data.points_per_shot
+	dunk_made.emit(dunker, points)
+	GameManager.add_score(dunker.team, points)
+	# Ball drops through basket
+	ground_velocity = Vector2(0.0, 30.0)
+	height = 10.0
+	height_velocity = -50.0
+	owner_changed.emit(old, null)
+	state_machine.change_state(state_machine.get_state("Loose"))
 
 
 ## Attempt a steal. Returns true if successful.

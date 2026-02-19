@@ -1,6 +1,6 @@
 # Phase 5: Dunk & Layup System
 
-**Status:** Not Started
+**Status:** Complete
 
 ## Goal
 
@@ -8,11 +8,11 @@ Spectacle and reliability near the rim.
 
 ## Features
 
-- [ ] Auto-switch to layup/dunk when near basket
-- [ ] Dunk trigger when:
+- [x] Auto-switch to layup/dunk when near basket
+- [x] Dunk trigger when:
   - Close to rim
   - Enough jump height
   - Not blocked
-- [ ] Simple dunk animation state
-- [ ] Guaranteed score unless blocked (arcade rule)
-- [ ] Rim collision and snap-to-dunk motion
+- [x] Simple dunk animation state
+- [x] Guaranteed score unless blocked (arcade rule)
+- [x] Rim collision and snap-to-dunk motion

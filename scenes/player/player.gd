@@ -115,10 +115,26 @@ func has_ball() -> bool:
 	return held_ball != null
 
 
+func is_in_dunk_range() -> bool:
+	if not has_ball():
+		return false
+	for node in get_tree().get_nodes_in_group("basket"):
+		var dist := global_position.distance_to(node.global_position)
+		if dist <= GameConfig.data.dunk_range:
+			return true
+	return false
+
+
 func try_shoot() -> void:
 	if held_ball == null:
 		return
 	held_ball.shoot(self)
+
+
+func try_dunk() -> void:
+	if held_ball == null:
+		return
+	held_ball.dunk(self)
 
 
 func try_pass() -> void:

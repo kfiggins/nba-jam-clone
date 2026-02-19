@@ -16,6 +16,8 @@ func physics_process(delta: float) -> State:
 
 	if Input.is_action_just_pressed("shoot") and player.is_human:
 		if player.has_ball():
+			if player.is_in_dunk_range():
+				return state_machine.get_state("Dunking")
 			return state_machine.get_state("Shooting")
 		return state_machine.get_state("Jumping")
 
