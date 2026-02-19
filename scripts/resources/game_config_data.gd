@@ -72,6 +72,12 @@ extends Resource
 @export var ai_shot_accuracy: float = 0.5
 @export var ai_steal_chance: float = 0.3
 @export var ai_aggression: float = 0.5
+@export var ai_shoot_range: float = 250.0
+@export var ai_open_threshold: float = 60.0
+@export var ai_pass_advantage: float = 50.0
+@export var ai_block_react_range: float = 80.0
+@export var ai_steal_cooldown: float = 1.0
+@export var ai_recovery_threshold: float = 30.0
 
 # On Fire
 @export var fire_streak_threshold: int = 3

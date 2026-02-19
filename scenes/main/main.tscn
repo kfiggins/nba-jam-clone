@@ -15,11 +15,23 @@ script = ExtResource("1")
 [node name="Basket" parent="." instance=ExtResource("6")]
 position = Vector2(1130, 360)
 
-[node name="Player" parent="." instance=ExtResource("4")]
-position = Vector2(640, 400)
+[node name="Player1" parent="." instance=ExtResource("4")]
+position = Vector2(400, 400)
+team = 1
 
 [node name="Player2" parent="." instance=ExtResource("4")]
-position = Vector2(500, 400)
+position = Vector2(350, 300)
+team = 1
+is_human = false
+
+[node name="Player3" parent="." instance=ExtResource("4")]
+position = Vector2(800, 400)
+team = 2
+is_human = false
+
+[node name="Player4" parent="." instance=ExtResource("4")]
+position = Vector2(750, 300)
+team = 2
 is_human = false
 
 [node name="Ball" parent="." instance=ExtResource("5")]

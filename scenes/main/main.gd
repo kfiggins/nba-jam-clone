@@ -1,5 +1,14 @@
 extends Node2D
-## Main scene. Wires up HUD and handles match start/restart input.
+## Main scene. Wires up HUD, handles match start/restart, and attaches AI controllers.
+
+
+func _ready() -> void:
+	for node in get_tree().get_nodes_in_group("players"):
+		var p := node as Player
+		if p and not p.is_human:
+			var controller := AIController.new()
+			controller.name = "AIController"
+			p.add_child(controller)
 
 
 func _unhandled_input(event: InputEvent) -> void:

@@ -1,6 +1,6 @@
 # Phase 8: AI Players (Arcade Style)
 
-**Status:** Not Started
+**Status:** Complete
 
 ## Goal
 
@@ -8,21 +8,21 @@ Fun, readable, not realistic NBA sim.
 
 ## Offense
 
-- [ ] Move toward scoring position
-- [ ] Shoot when open & near basket
-- [ ] Pass if teammate is better positioned
-- [ ] Attempt dunk near rim
+- [x] Move toward scoring position
+- [x] Shoot when open & near basket
+- [x] Pass if teammate is better positioned
+- [x] Attempt dunk near rim
 
 ## Defense
 
-- [ ] Guard nearest opponent
-- [ ] Try steal occasionally
-- [ ] Attempt block when shot detected
-- [ ] Recover toward basket if beaten
+- [x] Guard nearest opponent
+- [x] Try steal occasionally
+- [x] Attempt block when shot detected
+- [x] Recover toward basket if beaten
 
 ## Configurable Difficulty
 
-- [ ] Reaction speed
-- [ ] Shot accuracy
-- [ ] Steal success
-- [ ] Aggression
+- [x] Reaction speed
+- [x] Shot accuracy
+- [x] Steal success
+- [x] Aggression

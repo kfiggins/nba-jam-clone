@@ -29,6 +29,12 @@ var steal_stun_timer: float = 0.0
 var bump_slow_timer: float = 0.0
 var bump_cooldown_timer: float = 0.0
 
+## AI action flags (set by AIController, consumed by states)
+var ai_shoot_requested: bool = false
+var ai_pass_requested: bool = false
+var ai_steal_requested: bool = false
+var ai_sprint_requested: bool = false
+
 @onready var sprite: Node2D = $Sprite
 @onready var shadow: Node2D = $Shadow
 @onready var state_machine: StateMachine = $StateMachine
@@ -87,7 +93,7 @@ func apply_bump() -> void:
 
 func get_move_speed() -> float:
 	var speed: float
-	if Input.is_action_pressed("turbo") and is_human and turbo > 0.0:
+	if is_sprinting():
 		speed = GameConfig.data.player_sprint_speed
 	else:
 		speed = GameConfig.data.player_speed
@@ -97,7 +103,9 @@ func get_move_speed() -> float:
 
 
 func is_sprinting() -> bool:
-	return Input.is_action_pressed("turbo") and is_human and turbo > 0.0
+	if is_human:
+		return Input.is_action_pressed("turbo") and turbo > 0.0
+	return ai_sprint_requested and turbo > 0.0
 
 
 func update_turbo(delta: float) -> void:
