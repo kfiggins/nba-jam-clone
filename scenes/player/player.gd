@@ -281,6 +281,9 @@ func is_in_dunk_range() -> bool:
 		return false
 	var effective_range := GameConfig.data.dunk_range * get_stat_modifier("dunk")
 	for node in get_tree().get_nodes_in_group("basket"):
+		var basket := node as Basket
+		if basket and basket.team_target != team:
+			continue
 		var dist := global_position.distance_to(node.global_position)
 		if dist <= effective_range:
 			return true

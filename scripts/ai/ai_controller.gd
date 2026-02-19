@@ -108,7 +108,8 @@ func _evaluate_defense(ball: Ball) -> void:
 	if handler == null:
 		return
 
-	var basket_pos := _get_basket_position()
+	# Defend the basket the opponent is attacking (our defensive basket)
+	var basket_pos := _get_defensive_basket_position()
 	var dist_to_handler := player.global_position.distance_to(handler.global_position)
 
 	# 1. Opponent shooting/dunking -> jump to block
@@ -165,8 +166,22 @@ func _get_ball() -> Ball:
 
 func _get_basket_position() -> Vector2:
 	for node in player.get_tree().get_nodes_in_group("basket"):
+		var basket := node as Basket
+		if basket and basket.team_target == player.team:
+			return basket.global_position
+	# Fallback
+	for node in player.get_tree().get_nodes_in_group("basket"):
 		return node.global_position
 	return Vector2(1130, 360)
+
+
+func _get_defensive_basket_position() -> Vector2:
+	# The basket the opponent attacks (team_target != our team)
+	for node in player.get_tree().get_nodes_in_group("basket"):
+		var basket := node as Basket
+		if basket and basket.team_target != player.team:
+			return basket.global_position
+	return _get_basket_position()
 
 
 func _get_teammate() -> Player:
@@ -189,10 +204,12 @@ func _nearest_defender_distance() -> float:
 
 
 func _pick_scoring_position(basket_pos: Vector2) -> Vector2:
-	var best_pos := basket_pos + SWEET_SPOTS[0]
+	# Mirror sweet spots for left-side basket (team 2)
+	var x_flip := -1.0 if basket_pos.x < 640.0 else 1.0
+	var best_pos := basket_pos + Vector2(SWEET_SPOTS[0].x * x_flip, SWEET_SPOTS[0].y)
 	var best_score := -INF
 	for offset in SWEET_SPOTS:
-		var pos := basket_pos + offset
+		var pos := basket_pos + Vector2(offset.x * x_flip, offset.y)
 		var dist_to_us := player.global_position.distance_to(pos)
 		var min_def := _min_defender_dist_to(pos)
 		var score := min_def - dist_to_us * 0.5

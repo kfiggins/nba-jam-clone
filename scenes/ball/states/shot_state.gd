@@ -137,6 +137,12 @@ func _award_goaltending() -> void:
 
 
 func _find_basket() -> Node:
+	var team := ball.shot_shooter.team if ball.shot_shooter else 1
+	for node in ball.get_tree().get_nodes_in_group("basket"):
+		var basket := node as Basket
+		if basket and basket.team_target == team:
+			return basket
+	# Fallback: return any basket
 	for node in ball.get_tree().get_nodes_in_group("basket"):
 		return node
 	return null

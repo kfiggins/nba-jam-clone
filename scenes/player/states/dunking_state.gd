@@ -75,5 +75,10 @@ func _find_blocker() -> Player:
 
 func _find_basket_position() -> Vector2:
 	for node in player.get_tree().get_nodes_in_group("basket"):
+		var basket := node as Basket
+		if basket and basket.team_target == player.team:
+			return basket.global_position
+	# Fallback
+	for node in player.get_tree().get_nodes_in_group("basket"):
 		return node.global_position
 	return Vector2(1130, 360)

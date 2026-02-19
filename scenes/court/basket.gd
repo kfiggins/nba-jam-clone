@@ -2,6 +2,9 @@ class_name Basket
 extends Node2D
 ## Basketball hoop with a rim position, pseudo-3D height, and rim shake effect.
 
+## Which team scores on this basket (1 or 2).
+@export var team_target: int = 1
+
 ## Height of the rim in pseudo-3D space.
 var rim_height: float = 120.0
 

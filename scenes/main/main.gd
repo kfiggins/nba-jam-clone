@@ -76,7 +76,8 @@ func _on_possession_reset(receiving_team: int) -> void:
 	var ball := _get_ball()
 	var receiver := _get_inbound_player(receiving_team)
 	if ball and receiver:
-		ball.reset_to(GameConfig.data.inbound_position, receiver)
+		var inbound_pos := _get_inbound_position(receiving_team)
+		ball.reset_to(inbound_pos, receiver)
 
 
 func _on_shot_made(shooter: Player, points: int) -> void:
@@ -98,7 +99,7 @@ func _on_dunk_made(dunker: Player, _points: int) -> void:
 	var camera := _get_camera()
 	if camera:
 		camera.shake(config.shake_dunk_intensity, config.shake_dunk_duration)
-	var basket := _get_basket()
+	var basket := _get_basket(dunker.team if dunker else 0)
 	if basket:
 		basket.rim_shake()
 	AudioManager.play_sfx("dunk")
@@ -189,16 +190,29 @@ func _get_camera() -> GameCamera:
 	return null
 
 
-func _get_basket() -> Basket:
+func _get_basket(team: int = 0) -> Basket:
+	for node in get_tree().get_nodes_in_group("basket"):
+		var basket := node as Basket
+		if basket and (team == 0 or basket.team_target == team):
+			return basket
+	# Fallback: any basket
 	for node in get_tree().get_nodes_in_group("basket"):
 		return node as Basket
 	return null
 
 
+func _get_inbound_position(team: int) -> Vector2:
+	# Inbound near midcourt, on the side of the team's defensive end
+	if team == 1:
+		return Vector2(300, 360)  # Left side (near team 2's basket)
+	else:
+		return Vector2(980, 360)  # Right side (near team 1's basket)
+
+
 func _get_inbound_player(team: int) -> Player:
 	var best: Player = null
 	var best_dist := INF
-	var inbound_pos := GameConfig.data.inbound_position
+	var inbound_pos := _get_inbound_position(team)
 	for node in get_tree().get_nodes_in_group("players"):
 		var p := node as Player
 		if p and p.team == team:
