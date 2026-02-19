@@ -1,19 +1,19 @@
 # Phase 18: Start Screen, Pause Menu & Quit
 
-**Status:** Not Started
+**Status:** Complete
 
 ## Goal
 Add a title/start screen, an in-game pause menu, and the ability to quit back to the title screen.
 
 ## Requirements
 
-- [ ] Title screen scene with "Press Start" (or key) to begin
-- [ ] Title screen shows game name
-- [ ] Pause menu triggered by Escape key during gameplay
-- [ ] Pause menu pauses the game tree
-- [ ] Pause menu has Resume, Restart, and Quit to Title options
-- [ ] Quit to Title returns to the title screen scene
-- [ ] Add `pause` input action to project.godot
+- [x] Title screen scene with "Press Start" (or key) to begin
+- [x] Title screen shows game name
+- [x] Pause menu triggered by Escape key during gameplay
+- [x] Pause menu pauses the game tree
+- [x] Pause menu has Resume, Restart, and Quit to Title options
+- [x] Quit to Title returns to the title screen scene
+- [x] Add `pause` input action to project.godot
 
 ## Implementation Notes
 

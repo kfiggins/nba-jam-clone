@@ -13,6 +13,7 @@ const DEFAULT_SPAWN_POSITIONS := [
 
 
 func _ready() -> void:
+	_reset_game_manager()
 	_replay_system = ReplaySystem.new()
 	_replay_system.name = "ReplaySystem"
 	_replay_system.replay_ended.connect(_on_replay_ended)
@@ -206,3 +207,15 @@ func _get_inbound_player(team: int) -> Player:
 				best_dist = dist
 				best = p
 	return best
+
+
+func _reset_game_manager() -> void:
+	GameManager.state = GameManager.MatchState.PREGAME
+	GameManager.scores = [0, 0]
+	GameManager.time_remaining = 0.0
+	GameManager.countdown_remaining = 0.0
+	GameManager.winner = 0
+	GameManager.last_scoring_team = 0
+	GameManager.score_pause_timer = 0.0
+	GameManager.shot_clock_remaining = 0.0
+	GameManager.shot_clock_team = 0
