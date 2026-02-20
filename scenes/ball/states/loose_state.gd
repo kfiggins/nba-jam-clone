@@ -18,6 +18,10 @@ func physics_process(delta: float) -> State:
 		ball.global_position.x = clampf(ball.global_position.x, bounds.position.x, bounds.end.x)
 		ball.global_position.y = clampf(ball.global_position.y, bounds.position.y, bounds.end.y)
 
+	# No pickup during score pause — wait for possession reset
+	if GameManager.score_pause_timer > 0.0:
+		return null
+
 	# Auto-pickup: nearest player within radius and ball near ground
 	var config := GameConfig.data
 	for node in ball.get_tree().get_nodes_in_group("players"):
