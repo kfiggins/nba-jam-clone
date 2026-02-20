@@ -86,6 +86,9 @@ func _on_shot_made(shooter: Player, points: int) -> void:
 	var hud := _get_hud()
 	if hud:
 		hud.on_shot_made(points)
+	var basket := _get_basket(shooter.team if shooter else 0)
+	if basket:
+		basket.net_swish()
 	AudioManager.play_sfx("swish")
 
 
