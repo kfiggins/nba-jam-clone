@@ -103,10 +103,16 @@ func dunk(dunker: Player) -> void:
 	var points := GameConfig.data.points_per_shot
 	dunk_made.emit(dunker, points)
 	GameManager.add_score(dunker.team, points)
-	# Ball drops through basket
+	# Ball drops through basket from rim height
+	var rim_h := 60.0
+	for node in get_tree().get_nodes_in_group("basket"):
+		var basket := node as Basket
+		if basket and basket.team_target == dunker.team:
+			rim_h = basket.rim_height
+			break
 	ground_velocity = Vector2(0.0, 30.0)
-	height = 10.0
-	height_velocity = -50.0
+	height = rim_h
+	height_velocity = GameConfig.data.shot_made_height_velocity
 	owner_changed.emit(old, null)
 	state_machine.change_state(state_machine.get_state("Loose"))
 

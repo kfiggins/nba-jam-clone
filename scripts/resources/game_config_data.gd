@@ -6,7 +6,7 @@ extends Resource
 @export var countdown_duration: float = 3.0 # seconds
 @export var points_per_shot: int = 2
 @export var points_per_three: int = 3
-@export var enable_three_point_zone: bool = false
+@export var enable_three_point_zone: bool = true
 @export var three_point_distance: float = 400.0
 @export var score_pause_duration: float = 1.0
 @export var inbound_position: Vector2 = Vector2(300, 360)

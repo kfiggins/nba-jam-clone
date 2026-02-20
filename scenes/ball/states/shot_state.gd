@@ -37,11 +37,11 @@ func physics_process(delta: float) -> State:
 	var direction := (_target_pos - ball.global_position).normalized()
 	ball.global_position += direction * config.shot_speed * delta
 
-	# Arc height: blend from start height to ground, plus parabolic arc overlay
+	# Arc height: blend from start height to rim height, plus parabolic arc overlay
 	var remaining := ball.global_position.distance_to(_target_pos)
 	var progress := clampf(1.0 - remaining / _total_distance, 0.0, 1.0)
 	var peak := config.shot_arc_height
-	var base_height := lerpf(_start_height, 0.0, progress)
+	var base_height := lerpf(_start_height, _rim_height, progress)
 	ball.height = base_height + peak * config.shot_arc_curve_factor * progress * (1.0 - progress)
 
 	# Block check during block window
@@ -76,14 +76,15 @@ func _resolve_shot() -> void:
 	var roll := randf()
 
 	if roll < success_chance:
-		# Made shot
+		# Made shot — snap ball to basket center so it drops through the rim
+		ball.global_position = _target_pos
 		var points := _get_points(config, distance)
 		ball.shot_made.emit(shooter, points)
 		if shooter:
 			GameManager.add_score(shooter.team, points)
-		# Ball drops through basket
+		# Ball drops through basket from rim level
 		ball.ground_velocity = config.shot_made_drop_velocity
-		ball.height = config.shot_made_height
+		ball.height = _rim_height
 		ball.height_velocity = config.shot_made_height_velocity
 	else:
 		# Missed shot — ball bounces off rim
@@ -127,11 +128,12 @@ func _award_goaltending() -> void:
 	var shooter := ball.shot_shooter
 	var distance := _start_pos.distance_to(_target_pos)
 	var points := _get_points(config, distance)
+	ball.global_position = _target_pos
 	ball.shot_made.emit(shooter, points)
 	if shooter:
 		GameManager.add_score(shooter.team, points)
 	ball.ground_velocity = config.shot_made_drop_velocity
-	ball.height = config.shot_made_height
+	ball.height = _rim_height
 	ball.height_velocity = config.shot_made_height_velocity
 	state_machine.change_state(state_machine.get_state("Loose"))
 

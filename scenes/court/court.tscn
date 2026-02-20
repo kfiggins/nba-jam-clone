@@ -1,4 +1,6 @@
-[gd_scene format=3]
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/court/court_markings.gd" id="1"]
 
 [node name="Court" type="Node2D"]
 
@@ -13,3 +15,6 @@ offset_top = 100.0
 offset_right = 1180.0
 offset_bottom = 620.0
 color = Color(0.6, 0.4, 0.2, 1)
+
+[node name="CourtMarkings" type="Node2D" parent="."]
+script = ExtResource("1")

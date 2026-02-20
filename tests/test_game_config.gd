@@ -7,7 +7,7 @@ func test_game_config_data_has_default_values() -> void:
 	assert_eq(config.countdown_duration, 3.0, "Default countdown should be 3s")
 	assert_eq(config.points_per_shot, 2, "Default points per shot should be 2")
 	assert_eq(config.points_per_three, 3, "Default 3-pointer should be 3 points")
-	assert_eq(config.enable_three_point_zone, false, "3-point zone off by default")
+	assert_eq(config.enable_three_point_zone, true, "3-point zone enabled by default")
 
 
 func test_game_config_data_player_defaults() -> void:

@@ -32,10 +32,10 @@ func test_config_shot_made_drop_velocity() -> void:
 	assert_eq(GameConfig.data.shot_made_drop_velocity, Vector2(0.0, 30.0))
 
 func test_config_shot_made_height() -> void:
-	assert_eq(GameConfig.data.shot_made_height, 10.0)
+	assert_eq(GameConfig.data.shot_made_height, 60.0)
 
 func test_config_shot_made_height_velocity() -> void:
-	assert_eq(GameConfig.data.shot_made_height_velocity, -50.0)
+	assert_eq(GameConfig.data.shot_made_height_velocity, -200.0)
 
 func test_config_shot_miss_rim_height_factor() -> void:
 	assert_eq(GameConfig.data.shot_miss_rim_height_factor, 0.8)

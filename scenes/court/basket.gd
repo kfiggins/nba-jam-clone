@@ -5,16 +5,21 @@ extends Node2D
 ## Which team scores on this basket (1 or 2).
 @export var team_target: int = 1
 
-## Height of the rim in pseudo-3D space.
-var rim_height: float = 120.0
+## Height of the rim in pseudo-3D space (also controls visual elevation).
+var rim_height: float = 60.0
+
+@onready var visuals: Node2D = get_node_or_null("Visuals")
 
 
 func _ready() -> void:
 	add_to_group("basket")
+	# Elevate the hoop visuals above ground; shadow stays at ground level
+	if visuals:
+		visuals.position.y = -rim_height
 
 
 func rim_shake() -> Tween:
-	var rim := $Rim as Node2D
+	var rim := get_node_or_null("Visuals/Rim") as Node2D
 	if not rim:
 		return null
 	var config := GameConfig.data
@@ -30,7 +35,7 @@ func rim_shake() -> Tween:
 
 
 func net_swish() -> Tween:
-	var net := $Net as Node2D
+	var net := get_node_or_null("Visuals/Net") as Node2D
 	if not net:
 		return null
 	var tween := create_tween()

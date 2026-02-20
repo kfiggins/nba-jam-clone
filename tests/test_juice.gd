@@ -132,8 +132,8 @@ func test_rim_shake_creates_tween() -> void:
 func test_rim_node_exists_in_basket() -> void:
 	var basket: Basket = load("res://scenes/court/basket.tscn").instantiate() as Basket
 	add_child(basket)
-	var rim: Node2D = basket.get_node("Rim") as Node2D
-	assert_not_null(rim, "Basket should have a Rim child")
+	var rim: Node2D = basket.get_node("Visuals/Rim") as Node2D
+	assert_not_null(rim, "Basket should have a Visuals/Rim child")
 	basket.queue_free()
 
 
