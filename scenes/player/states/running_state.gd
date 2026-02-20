@@ -25,6 +25,9 @@ func physics_process(delta: float) -> State:
 	if wants_pass:
 		if player.has_ball():
 			player.try_pass()
+		elif player.is_human:
+			player.wants_pass_from_teammate = true
+			player.try_steal()
 		else:
 			player.try_steal()
 

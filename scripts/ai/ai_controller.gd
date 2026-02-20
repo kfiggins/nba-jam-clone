@@ -63,6 +63,13 @@ func _evaluate_offense_with_ball(ball: Ball) -> void:
 	var basket_pos := _get_basket_position()
 	var dist_to_basket := player.global_position.distance_to(basket_pos)
 
+	# 0. Human teammate calling for the ball -> pass immediately
+	var teammate := _get_teammate()
+	if teammate and teammate.is_human and teammate.wants_pass_from_teammate:
+		teammate.wants_pass_from_teammate = false
+		player.ai_pass_requested = true
+		return
+
 	# 1. In dunk range -> dunk
 	if player.is_in_dunk_range():
 		player.ai_shoot_requested = true
@@ -78,7 +85,6 @@ func _evaluate_offense_with_ball(ball: Ball) -> void:
 			return
 
 	# 3. Teammate closer to basket -> pass
-	var teammate := _get_teammate()
 	if teammate:
 		var tm_dist := teammate.global_position.distance_to(basket_pos)
 		if tm_dist < dist_to_basket - config.ai_pass_advantage:

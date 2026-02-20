@@ -43,6 +43,9 @@ var ai_pass_requested: bool = false
 var ai_steal_requested: bool = false
 var ai_sprint_requested: bool = false
 
+## Human "call for pass" flag — set when human presses pass without ball
+var wants_pass_from_teammate: bool = false
+
 @onready var sprite: Node2D = $Sprite
 @onready var shadow: Node2D = $Shadow
 @onready var state_machine: StateMachine = $StateMachine

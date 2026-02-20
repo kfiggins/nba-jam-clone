@@ -56,9 +56,9 @@ extends Resource
 @export var shot_close_range: float = 200.0
 @export var shot_release_delay: float = 0.15 # seconds before ball released during jump
 @export var shot_resolution_distance: float = 15.0
-@export var shot_made_drop_velocity: Vector2 = Vector2(0.0, 30.0)
-@export var shot_made_height: float = 10.0
-@export var shot_made_height_velocity: float = -50.0
+@export var shot_made_drop_velocity: Vector2 = Vector2(0.0, 20.0)
+@export var shot_made_height: float = 100.0
+@export var shot_made_height_velocity: float = -200.0
 @export var shot_miss_bounce_min: float = 100.0
 @export var shot_miss_bounce_max: float = 200.0
 @export var shot_miss_rim_height_factor: float = 0.8
