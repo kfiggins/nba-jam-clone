@@ -117,7 +117,7 @@ func test_config_inbound_position() -> void:
 	assert_eq(GameConfig.data.inbound_position, Vector2(300, 360))
 
 func test_config_court_bounds() -> void:
-	assert_eq(GameConfig.data.court_bounds, Rect2(80, 80, 1120, 560))
+	assert_eq(GameConfig.data.court_bounds, Rect2(100, 130, 1000, 460))
 
 func test_config_shot_clock_disabled_by_default() -> void:
 	assert_false(GameConfig.data.enable_shot_clock)

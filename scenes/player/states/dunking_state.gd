@@ -81,4 +81,4 @@ func _find_basket_position() -> Vector2:
 	# Fallback
 	for node in player.get_tree().get_nodes_in_group("basket"):
 		return node.global_position
-	return Vector2(1130, 360)
+	return Vector2(1082, 340)

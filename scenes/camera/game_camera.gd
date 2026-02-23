@@ -119,7 +119,7 @@ func _get_basket_position() -> Vector2:
 	var nodes := get_tree().get_nodes_in_group("basket")
 	if nodes.size() > 0:
 		return (nodes[0] as Node2D).global_position
-	return Vector2(1130.0, 360.0)
+	return Vector2(1082.0, 340.0)
 
 
 func _get_nearest_players(pos: Vector2, count: int) -> Array:

@@ -24,7 +24,7 @@ func enter() -> void:
 		_rim_height = basket.rim_height
 	else:
 		# Fallback: aim toward right side of court
-		_target_pos = Vector2(1130, 360)
+		_target_pos = Vector2(1082, 340)
 
 	_total_distance = _start_pos.distance_to(_target_pos)
 
